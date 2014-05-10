@@ -60,7 +60,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    private BusSchedule schedule;
 	    private String selectedRoute = null;
 	    private String selectedDirection = null;
-	    private Days selectedDay = Days.WEEKDAY;
 	    private String selectedStop = null;
 	    private int selectedTab = 0;
 	    private TabMode currentTabMode = null;
@@ -127,7 +126,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    {
 	    	if (selectedStop != null){
 	    		selectedStop = null;
-	    		selectedDay = Days.WEEKDAY;
 	    	}
 	    	else if (selectedRoute != null){
 	    		selectedDirection = null;
