@@ -264,7 +264,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		private List<String> getTimes(){
 			
 	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(getSelectedDay());
-	    	String msg = stop == null? getString(R.string.no_service_message) : stop.stops.get(selectedStop);
+	    	String msg = stop == null? null : stop.stops.get(selectedStop);
+	    	if (msg == null) msg = getString(R.string.no_service_message);
 	    	List<String> times = Arrays.asList(msg.split(","));
 	    	
 	    	List<String> results = new ArrayList<String>();
@@ -325,6 +326,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	ActionBar actionBar;
 	ListView currentView;
 	boolean forward = true;
+	private boolean recursiveGuard = false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -343,6 +345,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     
     private void renderView()
     {
+    	if (recursiveGuard) return;
+    	recursiveGuard = true;
         String[] options = m_xmlParser.getCurrentView();
         
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
@@ -375,6 +379,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         }
         setContentView(listView);
         currentView = listView;
+        
+        recursiveGuard = false;
         
     }
     
@@ -415,7 +421,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     	if (m_xmlParser.back()){
     		forward = false;
     		renderView();
-    		
     	}
     	else
     		super.onBackPressed();
