@@ -7,7 +7,7 @@
     
     <string name="route_page_title">Routes</string>
     
-    <string name="weekday_label">Weekday</string>
+    <string name="weekday_label">Mon-Fri</string>
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>
     

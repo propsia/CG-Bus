@@ -39,7 +39,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	private class Day
 	{
 		//Day List -> Stop list (e.g. Saturday --> [stop1, stop2...])
-		public LinkedHashMap<String, Stop> day = new LinkedHashMap<String, Stop>();
+		public LinkedHashMap<Days, Stop> day = new LinkedHashMap<Days, Stop>();
 	}
 	private class DirectionList
 	{
@@ -54,12 +54,13 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	}
 	
 	private enum TabMode { DIRECTION, DAY }
+	private enum Days { WEEKDAY, SATURDAY, SUNDAY }
 	
 	private class BusScheduleXmlParser implements TabListener {
 	    private BusSchedule schedule;
 	    private String selectedRoute = null;
 	    private String selectedDirection = null;
-	    private String selectedDay = "Weekday";
+	    private Days selectedDay = Days.WEEKDAY;
 	    private String selectedStop = null;
 	    private int selectedTab = 0;
 	    private TabMode currentTabMode = null;
@@ -73,7 +74,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	
 	    	String currentBusRoute = null;
 	    	String currentDirection = null;
-	    	String currentDay = null;
+	    	Days currentDay = null;
 	    	String currentStop = null;
 	    	boolean expectStopInfo = false;
 	
@@ -90,8 +91,21 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    				currentDirection = name;
 	    				schedule.routes.get(currentBusRoute).direction.put(currentDirection, new Day());
 	    				break;
-	    			case "day":
-	    				currentDay = name;
+	    			case "day":	    				
+	    				switch (name)
+	    				{
+	    				case "Weekday":
+	    					currentDay = Days.WEEKDAY;
+	    					break;
+	    				case "Saturday":
+	    					currentDay = Days.SATURDAY;
+	    					break;
+	    				case "Sunday":
+	    					currentDay = Days.SUNDAY;  
+	    					break;	
+	    				default:
+	    					throw new XmlPullParserException("Invalid day");
+	    				}
 	    				schedule.routes.get(currentBusRoute).direction.get(currentDirection).day.put(currentDay, new Stop());	    				
 	    				break;
 	    			case "stop":
@@ -108,12 +122,12 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		eventType = xpp.next();
 	    	}	
 	    }
-	    
+ 	    
 	    public boolean back()
 	    {
 	    	if (selectedStop != null){
 	    		selectedStop = null;
-	    		selectedDay = "Weekday";
+	    		selectedDay = Days.WEEKDAY;
 	    	}
 	    	else if (selectedRoute != null){
 	    		selectedDirection = null;
@@ -237,7 +251,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    }
 		
 		private List<String> getStops(){
-	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(actionBar.getTabAt(selectedTab).getText().toString()).day.get(selectedDay);
+	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(actionBar.getTabAt(selectedTab).getText().toString()).day.get(Days.WEEKDAY);
 	    	
 	    	List<String> direction = new ArrayList<String>();
 	    	
@@ -251,7 +265,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		
 		private List<String> getTimes(){
 			
-	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(actionBar.getTabAt(selectedTab).getText().toString());
+	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(getSelectedDay());
 	    	String msg = stop == null? getString(R.string.no_service_message) : stop.stops.get(selectedStop);
 	    	List<String> times = Arrays.asList(msg.split(","));
 	    	
@@ -266,6 +280,19 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	return results;
 		}
 
+		private Days getSelectedDay()
+		{
+			String selectedTabText = actionBar.getTabAt(selectedTab).getText().toString();
+			
+			if (selectedTabText.equals(getString(R.string.weekday_label)))
+				return Days.WEEKDAY;
+			if (selectedTabText.equals(getString(R.string.saturday_label)))
+				return Days.SATURDAY;
+			if (selectedTabText.equals(getString(R.string.sunday_label)))
+				return Days.SUNDAY;
+			
+			return null;
+		}
 		@Override
 		public void onTabReselected(Tab tab, FragmentTransaction ft) {
 			// do nothing
