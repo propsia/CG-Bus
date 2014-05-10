@@ -53,12 +53,16 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		
 	}
 	
+	private enum TabMode { DIRECTION, DAY }
+	
 	private class BusScheduleXmlParser implements TabListener {
 	    private BusSchedule schedule;
 	    private String selectedRoute = null;
 	    private String selectedDirection = null;
 	    private String selectedDay = "Weekday";
 	    private String selectedStop = null;
+	    private int selectedTab = 0;
+	    private TabMode currentTabMode = null;
 	    
 	    private void parseXml() throws XmlPullParserException, IOException{
 	    	
@@ -111,10 +115,11 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		selectedStop = null;
 	    		selectedDay = "Weekday";
 	    	}
-	    	else if (selectedDirection != null)
+	    	else if (selectedRoute != null){
 	    		selectedDirection = null;
-	    	else if (selectedRoute != null)
+	    		selectedStop = null;
 	    		selectedRoute = null;
+	    	}
 	    	else
 	    		return false;
 	    	return true;
@@ -122,14 +127,13 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    
 	    public boolean addSelectionInfo(String selectionInfo)
 	    {
-	    	if (selectedRoute == null)
+	    	if (selectedRoute == null){
 	    		selectedRoute = selectionInfo;
-	    	else if (selectedDirection == null)
-	    		selectedDirection = selectionInfo;
-	    	else if (selectedDay == null)
-	    		selectedDay = selectionInfo;
-	    	else if (selectedStop == null)
+	    	}
+	    	else if (selectedStop == null){
+	    		selectedDirection = actionBar.getTabAt(selectedTab).getText().toString();
 	    		selectedStop = selectionInfo;
+	    	}
 	    	else
 	    		return false;
 	    	return true;
@@ -139,41 +143,47 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    {
 	        actionBar.setDisplayHomeAsUpEnabled(true);
 	        actionBar.setHomeButtonEnabled(true);
-	        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	        
 	    	List<String> selection = new ArrayList<String>();
 	    	
 	    	try{
 		    	if (selectedRoute == null){
+		    		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		    		currentTabMode = null;
+		    		
 		    		selection = getBusRoutes(); //display routes
 		    		setTitle(getString(R.string.route_page_title));
 			        actionBar.setDisplayHomeAsUpEnabled(false);
 			        actionBar.setHomeButtonEnabled(false);
 		    	}
-		    	else if (selectedDirection == null){
-		    		selection = getDirections(); //display direction
+		    	else if (selectedStop == null){		    		
+		    		List<String> directions = getDirections();
+		    		
+		    		if (currentTabMode != TabMode.DIRECTION)
+		    		{
+		    			selectedDirection = directions.get(0);
+		    			currentTabMode = TabMode.DIRECTION;
+			    		actionBar.removeAllTabs();
+			            actionBar.addTab(actionBar.newTab().setText(directions.get(0)).setTabListener(m_xmlParser));
+			            actionBar.addTab(actionBar.newTab().setText(directions.get(1)).setTabListener(m_xmlParser));
+			            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		    		}
+		    		            
+		    		selection = getStops(); //display stop
 		    		setTitle("Route " + selectedRoute);
 		    	}
-		    	else if (selectedStop == null){
-		    		System.out.println("Choosing stop");
-		    		selection = getStops(); //display stop
-		    		System.out.println("Got it");
-		    		setTitle(selectedDirection);
-		    	}
-		    	else{
-		    		
+		    	else{	
 			        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 			        
-			        int tab = -1;
-			        if (selectedDay.equals("Weekday"))
-			        	tab = 0;
-			        else if (selectedDay.equals("Saturday"))
-			        	tab = 1;
-			        else if (selectedDay.equals("Sunday"))
-			        	tab = 2;
-			        
-			        actionBar.selectTab(actionBar.getTabAt(tab));
-			        
+		    		if (currentTabMode != TabMode.DAY)
+		    		{
+		    			currentTabMode = TabMode.DAY;
+			    		actionBar.removeAllTabs();
+			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.weekday_label)).setTabListener(m_xmlParser));
+			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.saturday_label)).setTabListener(m_xmlParser));
+			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.sunday_label)).setTabListener(m_xmlParser));
+		    		}
+			              
 		    		selection = getTimes(); //display times
 		    		setTitle(selectedStop);	
 		    	}
@@ -227,7 +237,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    }
 		
 		private List<String> getStops(){
-	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(selectedDay);
+	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(actionBar.getTabAt(selectedTab).getText().toString()).day.get(selectedDay);
 	    	
 	    	List<String> direction = new ArrayList<String>();
 	    	
@@ -241,11 +251,9 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		
 		private List<String> getTimes(){
 			
-	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(selectedDay);
+	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(actionBar.getTabAt(selectedTab).getText().toString());
 	    	String msg = stop == null? getString(R.string.no_service_message) : stop.stops.get(selectedStop);
 	    	List<String> times = Arrays.asList(msg.split(","));
-	    	
-	    	System.out.println(selectedDay);
 	    	
 	    	List<String> results = new ArrayList<String>();
 	    	
@@ -267,15 +275,16 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		@Override
 		public void onTabSelected(Tab tab, FragmentTransaction ft) {
 			
-			String newDay = tab.getText().toString();
-
-			if (selectedDay.equals(newDay))
-				return;
+			int newIndex = actionBar.getSelectedNavigationIndex();
 			
-			if (newDay.equals("Weekday") || (newDay.equals("Saturday") && selectedDay.equals("Sunday") ))
+			if (newIndex == selectedTab){
+				return;
+			}
+			
+			if (newIndex < selectedTab)
 				forward = false;
 			
-			selectedDay = newDay;
+			selectedTab = newIndex;
 			renderView();
 			
 		}
@@ -297,10 +306,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         super.onCreate(savedInstanceState);
         
         actionBar = getActionBar();
-        
-        actionBar.addTab(actionBar.newTab().setText(getString(R.string.weekday_label)).setTabListener(m_xmlParser));
-        actionBar.addTab(actionBar.newTab().setText(getString(R.string.saturday_label)).setTabListener(m_xmlParser));
-        actionBar.addTab(actionBar.newTab().setText(getString(R.string.sunday_label)).setTabListener(m_xmlParser));
         
     	try {
     		m_xmlParser.parseXml();
