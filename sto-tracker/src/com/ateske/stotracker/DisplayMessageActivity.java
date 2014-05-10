@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.ateske.stotracker;
 
 import java.io.IOException;
 import java.io.InputStream;
