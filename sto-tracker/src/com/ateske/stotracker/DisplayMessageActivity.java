@@ -29,7 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
 public class DisplayMessageActivity extends Activity implements OnItemClickListener {
 	
 	private class Stop
@@ -197,6 +196,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    		{
 		    			currentTabMode = TabMode.DAY;
 			    		actionBar.removeAllTabs();
+			    		selectedTab = 0;
 			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.weekday_label)).setTabListener(m_xmlParser));
 			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.saturday_label)).setTabListener(m_xmlParser));
 			            actionBar.addTab(actionBar.newTab().setText(getString(R.string.sunday_label)).setTabListener(m_xmlParser));
@@ -413,15 +413,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         	return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    
-    /** Called when the user clicks the Send button */
-    public void sendMessage(String selection) {
-    	
-    	m_xmlParser.addSelectionInfo(selection);
-    	
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        startActivity(intent);
     }
     
     @Override
