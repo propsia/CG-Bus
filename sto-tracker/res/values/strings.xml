@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">STO Tracker</string>
-    <string name="title_activity_display_message">Loading...</string>
     
     <string name="route_page_title">Routes</string>
     <string name="route_prefix">Route:</string>

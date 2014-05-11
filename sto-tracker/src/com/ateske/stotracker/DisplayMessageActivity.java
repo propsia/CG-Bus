@@ -8,10 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -19,6 +18,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Xml;
 import android.view.MenuItem;
@@ -151,10 +151,14 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	return true;
 	    }
 	    
-	    public String[] getCurrentView()
+	    @SuppressLint("NewApi")
+		public String[] getCurrentView()
 	    {
 	        actionBar.setDisplayHomeAsUpEnabled(true);
-	        actionBar.setHomeButtonEnabled(true);
+	        if(Build.VERSION.SDK_INT >= 14 ){
+	        	actionBar.setHomeButtonEnabled(true);
+	        }
+	        
 	        
 	    	List<String> selection = new ArrayList<String>();
 	    	
@@ -166,7 +170,9 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    		selection = getBusRoutes(); //display routes
 		    		setTitle(getString(R.string.route_page_title));
 			        actionBar.setDisplayHomeAsUpEnabled(false);
-			        actionBar.setHomeButtonEnabled(false);
+			        if(Build.VERSION.SDK_INT >= 14 ){
+			        	actionBar.setHomeButtonEnabled(false);
+			        }
 		    	}
 		    	else if (selectedStop == null){		    		
 		    		List<String> directions = getDirections();
@@ -331,6 +337,11 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //Set up dummy list view
+        //Needed for compatibility with API 11
+        ListView listView = new ListView(this);
+        setContentView(listView);
         
         actionBar = getActionBar();
         
