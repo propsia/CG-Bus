@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">STO Mobile</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_display_message">STO Routes</string>
+    <string name="app_name">STO Tracker</string>
+    <string name="title_activity_display_message">Loading...</string>
     
     <string name="route_page_title">Routes</string>
-    
+    <string name="route_prefix">Route:</string>
     <string name="weekday_label">Mon-Fri</string>
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>

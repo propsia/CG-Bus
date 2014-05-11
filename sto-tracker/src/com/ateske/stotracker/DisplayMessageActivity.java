@@ -182,7 +182,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    		}
 		    		            
 		    		selection = getStops(); //display stop
-		    		setTitle("Route " + selectedRoute);
+		    		setTitle(getString(R.string.route_prefix) + " " +  selectedRoute);
 		    	}
 		    	else{	
 			        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -397,10 +397,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == android.R.id.home){
+        if (id == android.R.id.home){
         	onBackPressed();
         	return true;
         }
