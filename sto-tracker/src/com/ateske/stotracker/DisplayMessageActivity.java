@@ -69,6 +69,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    private int selectedTab = 0;
 	    private TabMode currentTabMode = null;
 	    
+	    
 	    private void parseXml() throws XmlPullParserException, IOException{
 	    	
 	    	XmlPullParser xpp = getParser();
@@ -142,10 +143,11 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	return true;
 	    }
 	    
-	    public boolean addSelectionInfo(String selectionInfo)
+	    public boolean addSelectionInfo(String selectionInfo, int selectionIndex)
 	    {
 	    	if (selectedRoute == null){
 	    		selectedRoute = selectionInfo;
+	    		busSelectionIndex = selectionIndex;
 	    	}
 	    	else if (selectedStop == null){
 	    		selectedDirection = actionBar.getTabAt(selectedTab).getText().toString();
@@ -339,6 +341,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	ListView currentView;
 	boolean forward = true;
 	private boolean recursiveGuard = false;
+	private int busSelectionIndex = 0;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -388,6 +391,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setSelection(busSelectionIndex);
         
         if (options.length >= 20)
         {
@@ -420,7 +424,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
     {
-    	if (m_xmlParser.addSelectionInfo((String)arg0.getItemAtPosition(arg2)))
+    	if (m_xmlParser.addSelectionInfo((String)arg0.getItemAtPosition(arg2), arg2))
     		renderView();
     }
 
