@@ -68,6 +68,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    private String selectedStop = null;
 	    private int selectedTab = 0;
 	    private TabMode currentTabMode = null;
+	    private int selectedBusIndex = 0;
 	    
 	    
 	    private void parseXml() throws XmlPullParserException, IOException{
@@ -137,6 +138,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		selectedDirection = null;
 	    		selectedStop = null;
 	    		selectedRoute = null;
+	    		busSelectionIndex = selectedBusIndex;
 	    	}
 	    	else
 	    		return false;
@@ -145,9 +147,11 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    
 	    public boolean addSelectionInfo(String selectionInfo, int selectionIndex)
 	    {
+	    	busSelectionIndex = 0;
+	    	
 	    	if (selectedRoute == null){
 	    		selectedRoute = selectionInfo;
-	    		busSelectionIndex = selectionIndex;
+	    		selectedBusIndex = selectionIndex;
 	    	}
 	    	else if (selectedStop == null){
 	    		selectedDirection = actionBar.getTabAt(selectedTab).getText().toString();
@@ -218,8 +222,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		System.out.println("EXCEPTION: " + e);
 	    	}
 	    	
-	    	return selection.toArray(new String[selection.size()]);	    	
-	    	
+	    	return selection.toArray(new String[selection.size()]);	    		
 	    }
 	   
 	    private XmlPullParser getParser() {
