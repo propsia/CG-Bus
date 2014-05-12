@@ -10,5 +10,8 @@
     <string name="sunday_label">Dimanche</string>
     
     <string name="no_service_message">Aucun service pour ce journée</string>
+    
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="theme_option_title">Thèmes</string>
 
 </resources>

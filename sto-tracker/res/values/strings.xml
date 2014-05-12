@@ -10,5 +10,11 @@
     <string name="sunday_label">Sunday</string>
     
     <string name="no_service_message">No service for this day</string>
+    
+    <string name="title_activity_settings">Settings</string>
+    <string name="theme_option_title">Theme</string>
+    <string name="light_theme_string">Light</string>
+    <string name="dark_theme_string">Dark</string>
+    <string name="hybrid_theme_string">Hybrid</string>
 
 </resources>

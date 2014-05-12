@@ -8,8 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -17,10 +19,14 @@ import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -338,6 +344,22 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("example_list", "0");
+        
+        switch (theme)
+        {
+        case "0":
+        	setTheme(android.R.style.Theme_Holo_Light);
+        	break;
+        case "1":
+        	setTheme(android.R.style.Theme_Holo);
+        	break;
+        case "2":
+        	setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
+        	break;
+        }
+        
         //Set up dummy list view
         //Needed for compatibility with API 11
         ListView listView = new ListView(this);
@@ -412,7 +434,21 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         	onBackPressed();
         	return true;
         }
+        else if (id == R.id.action_settings)
+        {
+			finish();
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        return super.onCreateOptionsMenu(menu);
     }
     
     @Override
@@ -422,6 +458,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     		renderView();
     	}
     	else
-    		super.onBackPressed();
+    		finish();
     }
 }
