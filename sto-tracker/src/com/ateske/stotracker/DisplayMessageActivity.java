@@ -187,8 +187,10 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    			selectedDirection = directions.get(0);
 		    			currentTabMode = TabMode.DIRECTION;
 			    		actionBar.removeAllTabs();
-			            actionBar.addTab(actionBar.newTab().setText(directions.get(0)).setTabListener(m_xmlParser));
-			            actionBar.addTab(actionBar.newTab().setText(directions.get(1)).setTabListener(m_xmlParser));
+			    		for (String direction : directions)
+			    		{
+			    			actionBar.addTab(actionBar.newTab().setText(direction).setTabListener(m_xmlParser));
+			    		}
 			            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		    		}
 		    		            
