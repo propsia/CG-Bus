@@ -68,6 +68,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    private String selectedStop = null;
 	    private int selectedTab = 0;
 	    private TabMode currentTabMode = null;
+	    private int selectedBusIndex = 0;
+	    
 	    
 	    private void parseXml() throws XmlPullParserException, IOException{
 	    	
@@ -136,16 +138,20 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		selectedDirection = null;
 	    		selectedStop = null;
 	    		selectedRoute = null;
+	    		busSelectionIndex = selectedBusIndex;
 	    	}
 	    	else
 	    		return false;
 	    	return true;
 	    }
 	    
-	    public boolean addSelectionInfo(String selectionInfo)
+	    public boolean addSelectionInfo(String selectionInfo, int selectionIndex)
 	    {
+	    	busSelectionIndex = 0;
+	    	
 	    	if (selectedRoute == null){
 	    		selectedRoute = selectionInfo;
+	    		selectedBusIndex = selectionIndex;
 	    	}
 	    	else if (selectedStop == null){
 	    		selectedDirection = actionBar.getTabAt(selectedTab).getText().toString();
@@ -218,8 +224,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    		System.out.println("EXCEPTION: " + e);
 	    	}
 	    	
-	    	return selection.toArray(new String[selection.size()]);	    	
-	    	
+	    	return selection.toArray(new String[selection.size()]);	    		
 	    }
 	   
 	    private XmlPullParser getParser() {
@@ -343,6 +348,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	ListView currentView;
 	boolean forward = true;
 	private boolean recursiveGuard = false;
+	private int busSelectionIndex = 0;
 	SharedPreferences sharedPref;
 	
     @Override
@@ -393,6 +399,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setSelection(busSelectionIndex);
         
         if (options.length >= 20)
         {
@@ -425,7 +432,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
     {
-    	if (m_xmlParser.addSelectionInfo((String)arg0.getItemAtPosition(arg2)))
+    	if (m_xmlParser.addSelectionInfo((String)arg0.getItemAtPosition(arg2), arg2))
     		renderView();
     }
 
