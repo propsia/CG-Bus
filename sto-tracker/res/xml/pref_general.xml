@@ -13,5 +13,11 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/theme_title" />
+    
+     <CheckBoxPreference
+          android:title="@string/show_all_stops_title"
+          android:defaultValue="true"
+          android:summary="@string/show_all_stops_summary"
+          android:key="show_all_stops" />
 
 </PreferenceScreen>

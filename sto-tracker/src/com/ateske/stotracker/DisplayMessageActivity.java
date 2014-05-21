@@ -193,8 +193,10 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    			selectedDirection = directions.get(0);
 		    			currentTabMode = TabMode.DIRECTION;
 			    		actionBar.removeAllTabs();
-			            actionBar.addTab(actionBar.newTab().setText(directions.get(0)).setTabListener(m_xmlParser));
-			            actionBar.addTab(actionBar.newTab().setText(directions.get(1)).setTabListener(m_xmlParser));
+			    		for (String direction : directions)
+			    		{
+			    			actionBar.addTab(actionBar.newTab().setText(direction).setTabListener(m_xmlParser));
+			    		}
 			            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		    		}
 		    		            
@@ -227,9 +229,11 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	   
 	    private XmlPullParser getParser() {
 	    	
+	    	String fileName = sharedPref.getBoolean("show_all_stops", true)? "sto-complete.xml" : "sto-partial.xml";
+	    	
 	        try {
 	        	AssetManager assetManager = getAssets();
-	        	InputStream in = assetManager.open("stoscrape.xml");
+	        	InputStream in = assetManager.open(fileName);
 	            XmlPullParser parser = Xml.newPullParser();
 	            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
 	            parser.setInput(in, null);
@@ -345,12 +349,13 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	boolean forward = true;
 	private boolean recursiveGuard = false;
 	private int busSelectionIndex = 0;
+	SharedPreferences sharedPref;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("example_list", "0");
         
         switch (theme)
