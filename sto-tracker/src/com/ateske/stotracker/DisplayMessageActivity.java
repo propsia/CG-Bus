@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -150,7 +151,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	busSelectionIndex = 0;
 	    	
 	    	if (selectedRoute == null){
-	    		selectedRoute = selectionInfo;
+	    		
+	    		selectedRoute = selectionInfo.split("\\s+")[0];
 	    		selectedBusIndex = selectionIndex;
 	    	}
 	    	else if (selectedStop == null){
@@ -250,7 +252,26 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 			Set<String> keys = schedule.routes.keySet();
 			
 			List<String> result = new ArrayList<String>();
-			result.addAll(keys);
+			//result.addAll(keys);
+			
+			for (String route : keys)
+			{
+				
+				if (sharedPref.getBoolean("show_route_directions", true))
+				{
+					DirectionList directions = schedule.routes.get(route);
+					Set<String> direction = directions.direction.keySet();
+					String[] test = direction.toArray(new String[direction.size()]);
+					
+					String dir = test[0];
+					if (test.length > 1)
+						dir += " / " + test[1];
+					
+					route += "\n" + dir;
+				}
+				
+				result.add(route);
+			}
 			return result;
 			
 		}

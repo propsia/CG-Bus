@@ -19,5 +19,9 @@
     
     <string name="show_all_stops_title">Show all stops</string>
     <string name="show_all_stops_summary">If selected, all bus stops will be shown. Otherwise, only major ones will be.</string>
+    
+    <string name="show_route_directions_title">Show route directions</string>
+    <string name="show_route_directions_summary">If selected, the route view will show the directions for each route</string>
+    
 
 </resources>
