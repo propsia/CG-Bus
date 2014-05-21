@@ -13,5 +13,11 @@
     
     <string name="title_activity_settings">Paramètres</string>
     <string name="theme_option_title">Thèmes</string>
+    
+    <string name="show_all_stops_title">Afficher tous les arrêts</string>
+    <string name="show_all_stops_summary">Si sélectionnée, tous les arrêts seront affichés. Sinon, seuls les plus importants seront.</string>
+    
+    <string name="show_route_directions_title">Afficher les directions de route</string>
+    <string name="show_route_directions_summary">Si sélectionnée, le menu principal affiche les direction pour les lignes</string>
 
 </resources>

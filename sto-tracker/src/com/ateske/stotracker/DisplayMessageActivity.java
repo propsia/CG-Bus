@@ -265,7 +265,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 					
 					String dir = test[0];
 					if (test.length > 1)
-						dir += " / " + test[1];
+						dir += " ↔ " + test[1];
 					
 					route += "\n" + dir;
 				}
