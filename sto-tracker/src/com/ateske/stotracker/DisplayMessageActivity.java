@@ -391,9 +391,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 				String[] timeComponents = text[0].split(":");
 				
 				int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-				//currentHour = 0;
 				int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
-				//currentMinute = 10;
 				int busHour = Integer.parseInt(timeComponents[0]);
 				int busMinute = Integer.parseInt(timeComponents[1]);
 				
@@ -434,6 +432,14 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 			return false;
 		}
 		
+		public int getEnabledTextColor()
+		{
+			if (darkTheme)
+				return Color.WHITE;
+			
+			return Color.BLACK;
+		}
+		
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
 			TextView view =(TextView) super.getView(position, convertView, parent);
@@ -445,12 +451,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 			}
 			else
 			{
-				view.setTextColor(Color.BLACK);
+				view.setTextColor(getEnabledTextColor());
 			}
-			
-
-				
-			
 			return view;
 		}
 		
@@ -461,6 +463,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	ListView currentView;
 	boolean forward = true;
 	private boolean recursiveGuard = false;
+	private boolean darkTheme = false;
 	private int busSelectionIndex = 0;
 	SharedPreferences sharedPref;
 	
@@ -478,6 +481,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         	break;
         case "1":
         	setTheme(android.R.style.Theme_Holo);
+        	darkTheme = true;
         	break;
         case "2":
         	setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
