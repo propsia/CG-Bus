@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -19,9 +19,11 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,11 +32,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class DisplayMessageActivity extends Activity implements OnItemClickListener {
 	
@@ -364,6 +368,94 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		}
 	}
 	
+	private class MyAdaptor extends ArrayAdapter<String>
+	{
+
+		public MyAdaptor(Context context, int resource, String[] objects) {
+			super(context, resource, objects);
+			// TODO Auto-generated constructor stub
+		}
+		
+		public boolean isStringTime(String string)
+		{
+			String[] text = string.split(" ");
+			if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
+				return true;
+			return false;
+		}
+		public boolean isBusTimeInPast(String time)
+		{			
+			String[] text = time.split(" ");
+			if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
+			{
+				String[] timeComponents = text[0].split(":");
+				
+				int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+				//currentHour = 0;
+				int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+				//currentMinute = 10;
+				int busHour = Integer.parseInt(timeComponents[0]);
+				int busMinute = Integer.parseInt(timeComponents[1]);
+				
+				if (text[1].equals("PM") && busHour != 12)
+				{
+					busHour = busHour +  12;
+				}
+				
+				if (currentHour == 0)
+				{
+					if ( busHour == 12 && text[1].equals("AM") && currentMinute < busMinute)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+				else if (busHour == 12 && text[1].equals("AM"))
+				{
+					return false;
+				}
+				else
+				{
+					if  (currentHour >  busHour || (currentHour == busHour && currentMinute > busMinute))
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				
+			}
+			
+			return false;
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
+			TextView view =(TextView) super.getView(position, convertView, parent);
+			String time = view.getText().toString();
+			
+			if (isBusTimeInPast(time))
+			{
+				view.setTextColor(Color.GRAY);
+			}
+			else
+			{
+				view.setTextColor(Color.BLACK);
+			}
+			
+
+				
+			
+			return view;
+		}
+		
+	}
+	
 	private BusScheduleXmlParser m_xmlParser = new BusScheduleXmlParser();
 	ActionBar actionBar;
 	ListView currentView;
@@ -414,13 +506,28 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
     	recursiveGuard = true;
         String[] options = m_xmlParser.getCurrentView();
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+        MyAdaptor adapter = new MyAdaptor(this, 
                 android.R.layout.simple_list_item_1, options);
+        
         
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
         listView.setSelection(busSelectionIndex);
+        
+        if (adapter.isStringTime(options[0]))
+        {
+            for (int i = 0; i < options.length; ++i)
+            {
+            	if (!adapter.isBusTimeInPast(options[i]))
+            	{
+            		listView.setSelection(i);
+            		break;
+            	}
+            }
+        }
+        
+
         
         if (options.length >= 20)
         {
