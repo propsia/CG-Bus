@@ -325,10 +325,19 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	return results;
 		}
 
-		private Days getSelectedDay()
+		public Days getSelectedDay()
 		{
-			String selectedTabText = actionBar.getTabAt(selectedTab).getText().toString();
+			String selectedTabText;
+			try
+			{
+				selectedTabText = actionBar.getTabAt(selectedTab).getText().toString();
+			}
+			catch (Exception e)
+			{
+				return Days.WEEKDAY;
+			}
 			
+			System.out.println("DEBUG1");
 			if (selectedTabText.equals(getString(R.string.weekday_label)))
 				return Days.WEEKDAY;
 			if (selectedTabText.equals(getString(R.string.saturday_label)))
@@ -383,7 +392,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 				return true;
 			return false;
 		}
-		public boolean isBusTimeInPast(String time)
+		public boolean isBusTimeInPast(String time, Days busDay)
 		{			
 			String[] text = time.split(" ");
 			if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
@@ -392,6 +401,18 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 				
 				int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 				int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+				int currentDay_int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+				
+				Days currentDay = Days.WEEKDAY;
+				if (currentDay_int == Calendar.SATURDAY)
+					currentDay = Days.SATURDAY;
+				if (currentDay_int == Calendar.SUNDAY)
+					currentDay = Days.SUNDAY;
+				System.out.println("Current day:" + currentDay);
+				System.out.println("Bus day: " + busDay);
+				if (!currentDay.equals(busDay))
+					return true;
+				
 				int busHour = Integer.parseInt(timeComponents[0]);
 				int busMinute = Integer.parseInt(timeComponents[1]);
 				
@@ -445,7 +466,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 			TextView view =(TextView) super.getView(position, convertView, parent);
 			String time = view.getText().toString();
 			
-			if (isBusTimeInPast(time))
+			if (isBusTimeInPast(time, m_xmlParser.getSelectedDay()))
 			{
 				view.setTextColor(Color.GRAY);
 			}
@@ -523,7 +544,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
         {
             for (int i = 0; i < options.length; ++i)
             {
-            	if (!adapter.isBusTimeInPast(options[i]))
+            	if (!adapter.isBusTimeInPast(options[i], m_xmlParser.getSelectedDay()))
             	{
             		listView.setSelection(i);
             		break;
