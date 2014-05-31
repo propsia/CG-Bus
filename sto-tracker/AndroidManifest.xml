@@ -26,6 +26,7 @@
         <activity
             android:name="com.ateske.stotracker.SettingsActivity"
             android:label="@string/title_activity_settings" >
+			
         </activity>
     </application>
 
