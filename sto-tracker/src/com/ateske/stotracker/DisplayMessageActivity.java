@@ -147,6 +147,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    	}
 	    	else
 	    		return false;
+	    	
 	    	return true;
 	    }
 	    
@@ -196,12 +197,14 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 		    		
 		    		if (currentTabMode != TabMode.DIRECTION)
 		    		{
-		    			selectedDirection = directions.get(0);
 		    			currentTabMode = TabMode.DIRECTION;
 			    		actionBar.removeAllTabs();
 			    		for (String direction : directions)
 			    		{
-			    			actionBar.addTab(actionBar.newTab().setText(direction).setTabListener(m_xmlParser));
+			    			Tab tab = actionBar.newTab().setText(direction).setTabListener(m_xmlParser);
+			    			actionBar.addTab(tab);
+			    			if (direction.equals(selectedDirection))
+			    				actionBar.selectTab(tab);
 			    		}
 			            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		    		}
@@ -256,7 +259,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 			Set<String> keys = schedule.routes.keySet();
 			
 			List<String> result = new ArrayList<String>();
-			//result.addAll(keys);
 			
 			for (String route : keys)
 			{
@@ -295,7 +297,8 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 	    }
 		
 		private List<String> getStops(){
-	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(actionBar.getTabAt(selectedTab).getText().toString()).day.get(Days.WEEKDAY);
+			selectedDirection =  actionBar.getTabAt(selectedTab).getText().toString();
+	    	Stop stop = schedule.routes.get(selectedRoute).direction.get(selectedDirection).day.get(Days.WEEKDAY);
 	    	
 	    	List<String> direction = new ArrayList<String>();
 	    	
@@ -337,7 +340,6 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 				return Days.WEEKDAY;
 			}
 			
-			System.out.println("DEBUG1");
 			if (selectedTabText.equals(getString(R.string.weekday_label)))
 				return Days.WEEKDAY;
 			if (selectedTabText.equals(getString(R.string.saturday_label)))
@@ -408,8 +410,7 @@ public class DisplayMessageActivity extends Activity implements OnItemClickListe
 					currentDay = Days.SATURDAY;
 				if (currentDay_int == Calendar.SUNDAY)
 					currentDay = Days.SUNDAY;
-				System.out.println("Current day:" + currentDay);
-				System.out.println("Bus day: " + busDay);
+				
 				if (!currentDay.equals(busDay))
 					return true;
 				
