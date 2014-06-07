@@ -109,7 +109,7 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     public void onBackPressed() {
     	finish();
-    	Intent refresh = new Intent(this, DisplayMessageActivity.class);
+    	Intent refresh = new Intent(this, TabDisplay.class);
     	startActivity(refresh);
     }
 
