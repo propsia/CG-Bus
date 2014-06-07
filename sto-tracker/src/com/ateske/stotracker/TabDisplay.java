@@ -8,6 +8,7 @@ import com.ateske.stotracker.ApplicationController.Days;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -325,11 +326,15 @@ public class TabDisplay extends ActionBarActivity implements
     @Override
     public void onBackPressed() {
     	if (m_controller.back()){
-    		//forward = false;
     		renderView(AnimationTypes.BACK);
     	}
     	else
     		finish();
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
     }
 
 }
