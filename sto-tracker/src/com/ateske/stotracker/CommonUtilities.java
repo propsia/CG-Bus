@@ -1,9 +1,8 @@
 package com.ateske.stotracker;
 
 import java.util.Calendar;
-
 import com.ateske.stotracker.ApplicationController.Days;
-
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
@@ -26,6 +25,7 @@ public class CommonUtilities {
 		return m_preferenceManager.getBoolean("show_route_directions", true);
 	}
 	
+	@SuppressLint("InlinedApi")
 	public static int getSelectedTheme()
 	{
         String theme = m_preferenceManager.getString("example_list", "0");
@@ -37,7 +37,8 @@ public class CommonUtilities {
         case "1":
         	return android.R.style.Theme_Holo;
         case "2":
-        	return android.R.style.Theme_Holo_Light_DarkActionBar;
+        	if (android.os.Build.VERSION.SDK_INT >= 14)
+        		return android.R.style.Theme_Holo_Light_DarkActionBar;
         }
         
         //We should never reach this code... but if something goes wrong,
@@ -53,12 +54,25 @@ public class CommonUtilities {
 		return Color.BLACK;
 	}
 	
+	//Returns true if a string represents a time in the format xx:xx [am/pm]
 	public boolean isStringTime(String string)
 	{
 		String[] text = string.split(" ");
 		if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
 			return true;
 		return false;
+	}
+	
+	public static Days getCurrentDay()
+	{
+		int currentDay_int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+		
+		if (currentDay_int == Calendar.SATURDAY)
+			return Days.SATURDAY;
+		if (currentDay_int == Calendar.SUNDAY)
+			return Days.SUNDAY;
+		
+		return Days.WEEKDAY;
 	}
 	
 	public static boolean isBusTimeInPast(String time, Days busDay)
@@ -69,15 +83,8 @@ public class CommonUtilities {
 			String[] timeComponents = text[0].split(":");
 			
 			int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-			//currentHour = 7;
 			int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
-			int currentDay_int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-			
-			Days currentDay = Days.WEEKDAY;
-			if (currentDay_int == Calendar.SATURDAY)
-				currentDay = Days.SATURDAY;
-			if (currentDay_int == Calendar.SUNDAY)
-				currentDay = Days.SUNDAY;
+			Days currentDay = getCurrentDay();
 			
 			if (!currentDay.equals(busDay))
 				return true;

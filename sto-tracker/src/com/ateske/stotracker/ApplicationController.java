@@ -172,7 +172,6 @@ public class ApplicationController extends Activity {
     	return true;
     } 
     
-    @SuppressLint("NewApi")
 	public ViewContext getCurrentView() throws XmlPullParserException
 	{
  
@@ -295,6 +294,7 @@ public class ApplicationController extends Activity {
 		context.listViews = timeViews;
 		context.tabTitles = tabTitles;
 		context.viewTitle = selectedStop;
+		context.tabToSelect = CommonUtilities.getCurrentDay().ordinal();
 		
 		Days[] days = new Days[] {Days.WEEKDAY, Days.SATURDAY, Days.SUNDAY};
 		

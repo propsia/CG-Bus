@@ -302,7 +302,6 @@ public class TabDisplay extends ActionBarActivity implements
 		{
 			getListView().setSelection(m_defaultPosition);
 			getListView().setFastScrollEnabled(true);
-			System.out.println("SCROLLING TO: " + m_defaultPosition);
 		}
 		
 		public void setOnItemClickListener(OnItemClickListener listener)
