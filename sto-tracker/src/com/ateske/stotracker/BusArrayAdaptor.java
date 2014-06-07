@@ -27,34 +27,51 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		TextView view =(TextView) super.getView(position, convertView, parent);
-		String time = view.getText().toString();
+		String text = view.getText().toString();
 		
-		String[] parts = time.split("\n");
+		String[] parts = text.split("\n");
 		if (parts.length == 2)
 		{
-			Spannable busNumber = new SpannableString(parts[0]);
-			Spannable busName = new SpannableString(parts[1]);
-			
-			busNumber.setSpan(new StyleSpan(Typeface.BOLD), 0, busNumber.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			busName.setSpan(new ForegroundColorSpan(Color.GRAY), 0, busName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			
-			view.setText(busNumber);
-			view.append("\n");
-			view.append(busName);
-					
+			return formatBusRoute(view, parts[0], parts[1]);
+		}
+		else if (CommonUtilities.isStringTime(text))
+		{
+			return formatBusTime(view, text);
+		}
+
+		return view;
+	}
+	
+	public View formatBusRoute(TextView view, String busNumberStr, String busNameStr)
+	{
+		Spannable busNumber = new SpannableString(busNumberStr);
+		Spannable busName = new SpannableString(busNameStr);
+		
+		//Set the bus number to bold
+		busNumber.setSpan(new StyleSpan(Typeface.BOLD), 0, busNumber.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		//Set the bus direction text to gray
+		busName.setSpan(new ForegroundColorSpan(Color.GRAY), 0, busName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		
+		view.setText(busNumber);
+		view.append("\n");
+		view.append(busName);
+		
+		return view;
+	}
+	
+	public View formatBusTime(TextView view, String time)
+	{
+		if (CommonUtilities.isBusTimeInPast(time, m_day))
+		{
+			//If the bus has already passed, set the text to gray
+			view.setTextColor(Color.GRAY);
 		}
 		else
 		{
-			if (CommonUtilities.isBusTimeInPast(time, m_day ))
-			{
-				view.setTextColor(Color.GRAY);
-			}
-			else
-			{
-				view.setTextColor(CommonUtilities.getEnabledTextColor());
-			}
+			//Otherwise, set it to black
+			view.setTextColor(CommonUtilities.getEnabledTextColor());
 		}
-
+		
 		return view;
 	}
 	

@@ -55,7 +55,7 @@ public class CommonUtilities {
 	}
 	
 	//Returns true if a string represents a time in the format xx:xx [am/pm]
-	public boolean isStringTime(String string)
+	public static boolean isStringTime(String string)
 	{
 		String[] text = string.split(" ");
 		if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
@@ -78,7 +78,7 @@ public class CommonUtilities {
 	public static boolean isBusTimeInPast(String time, Days busDay)
 	{			
 		String[] text = time.split(" ");
-		if (text.length == 2 && (text[1].equals("AM") || text[1].equals("PM")))
+		if (isStringTime(time))
 		{
 			String[] timeComponents = text[0].split(":");
 			
