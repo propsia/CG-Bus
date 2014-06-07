@@ -14,19 +14,19 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.ateske.stotracker.DisplayMessageActivity"
+            android:name="com.ateske.stotracker.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.ateske.stotracker.TabDisplay"
+            android:theme="@style/Theme.AppCompat.Light"
             android:label="@string/app_name"
-            android:parentActivityName="com.ateske.stotracker.MainActivity" >
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.ateske.stotracker.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-			
         </activity>
     </application>
 
