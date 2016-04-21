@@ -16,8 +16,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Xml;
 
-
-
 public class ApplicationController extends Activity {
 	
 	public enum Days { WEEKDAY, SATURDAY, SUNDAY }
@@ -63,12 +61,10 @@ public class ApplicationController extends Activity {
     	
     	try {
 			parseXml();
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (XmlPullParserException | IOException e) {
 			e.printStackTrace();
 		}
-    }
+	}
     
     private void parseXml() throws XmlPullParserException, IOException{
     	
@@ -191,7 +187,7 @@ public class ApplicationController extends Activity {
    
     private XmlPullParser getParser() {
     	
-    	String fileName = CommonUtilities.getShowAllStops()? "sto-complete.xml" : "sto-partial.xml";
+    	String fileName = "sto-complete.xml";
     	
         try {
         	InputStream in = m_context.getAssets().open(fileName);
@@ -249,7 +245,8 @@ public class ApplicationController extends Activity {
 		for (String direction : directions)
 		{
 			Stop stop = schedule.routes.get(selectedRoute).direction.get(direction).day.get(Days.WEEKDAY);
-			stops.add(stop.stops.keySet().toArray(new String[1]));
+			String[] theStops = stop.stops.keySet().toArray(new String[1]);
+			stops.add(theStops);
 		}
 		
 		ViewContext context = new ViewContext();

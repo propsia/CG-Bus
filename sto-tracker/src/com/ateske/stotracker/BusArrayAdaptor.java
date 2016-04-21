@@ -38,7 +38,17 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 		{
 			return formatBusTime(view, text);
 		}
+		else
+		{
+			return formatDirectionName(view, text);
+		}
+	}
 
+	public View formatDirectionName(TextView view, String directionName)
+	{
+		String[] splitStr = directionName.split("//");
+		String stopName = splitStr[splitStr.length-1];
+		view.setText(stopName);
 		return view;
 	}
 	

@@ -19,11 +19,5 @@
       android:defaultValue="true"
       android:summary="@string/show_route_directions_summary"
       android:key="show_route_directions" />
-    
-     <CheckBoxPreference
-          android:title="@string/show_all_stops_title"
-          android:defaultValue="true"
-          android:summary="@string/show_all_stops_summary"
-          android:key="show_all_stops" />
 
 </PreferenceScreen>

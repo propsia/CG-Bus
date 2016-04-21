@@ -15,11 +15,6 @@ public class CommonUtilities {
 		m_preferenceManager = preferenceManager;
 	}
 	
-	public static boolean getShowAllStops()
-	{
-		return m_preferenceManager.getBoolean("show_all_stops", true);
-	}
-	
 	public static boolean getShowRouteDirections()
 	{
 		return m_preferenceManager.getBoolean("show_route_directions", true);

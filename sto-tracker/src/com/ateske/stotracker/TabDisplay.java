@@ -1,11 +1,5 @@
 package com.ateske.stotracker;
 
-import java.util.List;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import com.ateske.stotracker.ApplicationController.Days;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -32,6 +26,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.ateske.stotracker.ApplicationController.Days;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.util.List;
+
 public class TabDisplay extends ActionBarActivity implements
 		ActionBar.TabListener, OnItemClickListener {
 
@@ -52,7 +52,7 @@ public class TabDisplay extends ActionBarActivity implements
         setTheme(CommonUtilities.getSelectedTheme());
         
         //Initialize the controller
-        m_controller = new ApplicationController(this);        
+        m_controller = new ApplicationController(this);
         
         //Create a dummy page to hold empty content while
         //we load the first page
@@ -87,7 +87,7 @@ public class TabDisplay extends ActionBarActivity implements
 		
 		// Set up the ViewPager with the sections adapter.
 		ViewPager newView = new ViewPager(this);
-		newView.setId(1);
+		newView.setId(R.id.random_id);
 		newView.setAdapter(mSectionsPagerAdapter);
 		
 		//Start the animation
@@ -286,7 +286,7 @@ public class TabDisplay extends ActionBarActivity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			
+
 			Bundle args = this.getArguments();
 			String[] values = (String[]) args.get(LIST_CONTENTS);
 			Days day = (Days) args.get(SELECTED_DAY);
