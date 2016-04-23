@@ -18,13 +18,17 @@ import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ateske.stotracker.ApplicationController.Days;
 
@@ -39,6 +43,7 @@ public class TabDisplay extends ActionBarActivity implements
 	private ViewPager mViewPager;
 	private static ApplicationController m_controller;
 	private enum AnimationTypes {NONE, FORWARD, BACK};
+    MenuItem m_filterButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +88,7 @@ public class TabDisplay extends ActionBarActivity implements
 		
 		// Create the adapter that will return a fragment for each of the tabs
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager(),this, context.listViews, context.tabTitles, context.listScrollPosition);
+				getSupportFragmentManager(),this, context.listViews, context.tabTitles, context.listScrollPosition, context.favoritesEnabled);
 		
 		// Set up the ViewPager with the sections adapter.
 		ViewPager newView = new ViewPager(this);
@@ -148,13 +153,45 @@ public class TabDisplay extends ActionBarActivity implements
 		//Set title
 		setTitle(context.viewTitle);
 		actionBar.setTitle(context.viewTitle);
+
+        //Set action icon status
+        if (m_filterButton != null)
+        {
+            updateActionIcons(context.favoritesEnabled);
+        }
 		
 	}
+
+    private void updateActionIcons(boolean favoritesEnabled){
+        if (favoritesEnabled)
+        {
+            m_filterButton.setVisible(true);
+            if (CommonUtilities.showFavorites())
+                m_filterButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SHOW_FAVORITES));
+            else
+                m_filterButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SHOW_ALL));
+        }
+        else
+        {
+            m_filterButton.setVisible(false);
+        }
+
+
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.action_bar, menu);
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        m_filterButton = menu.findItem(R.id.favorites_toggle);
+
+        try{updateActionIcons(m_controller.getCurrentView().favoritesEnabled);}
+        catch(XmlPullParserException e){}
+
+        MenuItem settingsButton = menu.findItem(R.id.action_settings);
+        settingsButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SETTINGS));
+
 		return true;
 	}
 
@@ -173,6 +210,11 @@ public class TabDisplay extends ActionBarActivity implements
 			finish();
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
+        }
+        else if (id == R.id.favorites_toggle)
+        {
+            CommonUtilities.toggleFavoriteView();
+            renderView(AnimationTypes.NONE);
         }
         return super.onOptionsItemSelected(item);
 	}
@@ -206,9 +248,10 @@ public class TabDisplay extends ActionBarActivity implements
 		String[] m_tabTitles;
 		int[] m_listPosition;
 		OnItemClickListener m_clickListener;
+        boolean m_allowFavorites;
 
 		public SectionsPagerAdapter(FragmentManager fm, OnItemClickListener listener, 
-				List<String[]> pageContents, String[] tabTitles, int[] listPosition) {
+				List<String[]> pageContents, String[] tabTitles, int[] listPosition, boolean allowFavorites) {
 			super(fm);
 			
 			if (pageContents.size() != 1 && pageContents.size() != tabTitles.length)
@@ -218,6 +261,7 @@ public class TabDisplay extends ActionBarActivity implements
 			m_tabTitles = tabTitles;
 			m_clickListener = listener;
 			m_listPosition = listPosition;
+            m_allowFavorites = allowFavorites;
 			
 		}
 
@@ -238,7 +282,7 @@ public class TabDisplay extends ActionBarActivity implements
 					day = Days.SUNDAY;
 				}
 			}
-			PlaceholderFragment fragment = PlaceholderFragment.newInstance(m_pageContents.get(position), m_listPosition[position], day);
+			PlaceholderFragment fragment = PlaceholderFragment.newInstance(m_pageContents.get(position), m_listPosition[position], day, m_allowFavorites);
 			fragment.setOnItemClickListener(m_clickListener);
 			return fragment;
 		}
@@ -266,6 +310,7 @@ public class TabDisplay extends ActionBarActivity implements
 		private static final String LIST_CONTENTS = "list_contents";
 		private static final String LIST_POSITION = "list_position";
 		private static final String SELECTED_DAY = "selected_day";
+        private static final String ALLOW_FAVORITES = "allow_favorites";
 		
 		private OnItemClickListener m_listener;
 		private int m_defaultPosition;
@@ -273,12 +318,13 @@ public class TabDisplay extends ActionBarActivity implements
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
-		public static PlaceholderFragment newInstance(String[] listItems, int listPosition, Days day) {
+		public static PlaceholderFragment newInstance(String[] listItems, int listPosition, Days day, boolean allowFavorites) {
 			PlaceholderFragment fragment = new PlaceholderFragment();
 			Bundle args = new Bundle();
 			args.putStringArray(LIST_CONTENTS, listItems);
 			args.putInt(LIST_POSITION, listPosition);
 			args.putSerializable(SELECTED_DAY, day);
+            args.putBoolean(ALLOW_FAVORITES, allowFavorites);
 			fragment.setArguments(args);
 			return fragment;
 		}
@@ -290,7 +336,8 @@ public class TabDisplay extends ActionBarActivity implements
 			Bundle args = this.getArguments();
 			String[] values = (String[]) args.get(LIST_CONTENTS);
 			Days day = (Days) args.get(SELECTED_DAY);
-			BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, values, day);
+            boolean allowFavorites = (boolean)args.get(ALLOW_FAVORITES);
+			BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), R.layout.list_item_star, values, day, allowFavorites);
 			setListAdapter(adapter);
 			m_defaultPosition = (int)args.get(LIST_POSITION);
 			
@@ -313,6 +360,23 @@ public class TabDisplay extends ActionBarActivity implements
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			m_listener.onItemClick(l, v, position, id);
+		}
+
+	}
+
+	public void checkboxClicked(View v) {
+		//code to check if this checkbox is checked!
+		CheckBox checkBox = (CheckBox)v;
+		LinearLayout linearLayout = (LinearLayout)checkBox.getParent();
+		TextView textView = (TextView) linearLayout.getChildAt(0);
+		String text = textView.getText().toString();
+		if(checkBox.isChecked()){
+			CommonUtilities.setFavorite(text, true);
+            checkBox.setButtonDrawable(CommonUtilities.getIcon(CommonUtilities.ICONS.FAVORITE));
+		}
+		else{
+			CommonUtilities.setFavorite(text, false);
+            checkBox.setButtonDrawable(CommonUtilities.getIcon(CommonUtilities.ICONS.NOT_FAVORITE));
 		}
 	}
 

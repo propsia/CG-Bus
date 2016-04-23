@@ -20,4 +20,6 @@
     <string name="show_route_directions_title">Afficher les directions de route</string>
     <string name="show_route_directions_summary">Si sélectionnée, le menu principal affiche les direction pour les lignes</string>
 
+    <string name="title_favorites_toggle">Préféré</string>
+
 </resources>

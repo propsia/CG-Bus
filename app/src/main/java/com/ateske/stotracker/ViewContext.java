@@ -9,4 +9,5 @@ public class ViewContext {
 	public boolean backPossible = true;
 	public int[] listScrollPosition = new int[]{0,0,0};
 	public int tabToSelect = 0;
+	public boolean favoritesEnabled = false;
 }

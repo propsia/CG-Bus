@@ -233,6 +233,7 @@ public class ApplicationController extends Activity {
 		context.viewTitle = m_context.getString(R.string.route_page_title);
 		context.backPossible = false;
 		context.listScrollPosition[0] = m_selectedRoutePosition;
+		context.favoritesEnabled = true;
 		
 		return context;
 		

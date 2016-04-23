@@ -1,14 +1,86 @@
 package com.ateske.stotracker;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+
 import com.ateske.stotracker.ApplicationController.Days;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
 public class CommonUtilities {
-	
+
+	public enum ICONS{
+		SHOW_ALL,
+		SHOW_FAVORITES,
+		FAVORITE,
+		NOT_FAVORITE,
+		SETTINGS
+	}
+
+	public static int getIcon(ICONS icon)
+	{
+		boolean whiteStatusBarIcon =  getStatusbarColor() != Color.WHITE;
+		boolean whiteIcon = getEnabledTextColor() == Color.WHITE;
+		switch (icon) {
+			case SHOW_ALL:
+				return whiteStatusBarIcon? R.drawable.ic_star_half_white_24dp : R.drawable.ic_star_half_black_24dp;
+			case SHOW_FAVORITES:
+				return whiteStatusBarIcon? R.drawable.ic_star_white_24dp : R.drawable.ic_star_black_24dp;
+			case FAVORITE:
+				return whiteIcon? R.drawable.ic_star_white_24dp : R.drawable.ic_star_black_24dp;
+			case NOT_FAVORITE:
+				return whiteIcon? R.drawable.ic_star_border_white_24dp : R.drawable.ic_star_border_black_24dp;
+			case SETTINGS:
+				return whiteStatusBarIcon? R.drawable.ic_settings_white_24dp : R.drawable.ic_settings_black_24dp;
+		}
+		return R.drawable.ic_launcher;
+	}
 	private static SharedPreferences m_preferenceManager;
+
+	public static void toggleFavoriteView()
+	{
+		//Get favorite settings
+		Boolean favoriteSetting = m_preferenceManager.getBoolean("showfavorite", false);
+		SharedPreferences.Editor editor = m_preferenceManager.edit();
+		editor.putBoolean("showfavorite", !favoriteSetting);
+		editor.commit();
+	}
+
+	public static boolean showFavorites()
+	{
+		return m_preferenceManager.getBoolean("showfavorite", false);
+	}
+
+	public static void setFavorite(String text, boolean favorite)
+	{
+		//Prepare text for storage in settings
+		text = text.replace("\n", "");
+		text = text + ";";
+
+		//Get favorite settings
+		String favoriteSetting = m_preferenceManager.getString("favorites", "");
+
+		//Add or remove text from the settings
+		favoriteSetting = favoriteSetting.replace(text,"");
+		if (favorite)
+		{
+			favoriteSetting = favoriteSetting + text;
+		}
+
+		//Save settings
+		SharedPreferences.Editor editor = m_preferenceManager.edit();
+		editor.putString("favorites", favoriteSetting);
+		editor.commit();
+	}
+
+	public static boolean isFavorite(String text)
+	{
+		text = text.replace("\n", "");
+		String favoriteSetting = m_preferenceManager.getString("favorites", "");
+		return favoriteSetting.contains(text);
+	}
 	
 	public static void setPreferenceManager(SharedPreferences preferenceManager)
 	{
@@ -127,6 +199,12 @@ public class CommonUtilities {
 	private static boolean isDarkThemeSelected()
 	{
 		return m_preferenceManager.getString("example_list", "0").equals("1");
+	}
+
+	private static int getStatusbarColor(){
+		if (getSelectedTheme() == android.R.style.Theme_Holo_Light)
+			return Color.WHITE;
+		return Color.BLACK;
 	}
 	
 	
