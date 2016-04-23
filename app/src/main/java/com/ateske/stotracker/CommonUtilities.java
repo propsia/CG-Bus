@@ -11,7 +11,12 @@ import android.graphics.Color;
 
 public class CommonUtilities {
 
-	public enum ICONS{
+    private static SharedPreferences m_preferenceManager;
+
+    private static final String FAVORITE_STOP_LIST = "favorite_stop_list";
+    private static final String SHOW_ONLY_FAVORITE_STOP = "show_only_favorite_stop";
+
+    public enum ICONS{
 		SHOW_ALL,
 		SHOW_FAVORITES,
 		FAVORITE,
@@ -19,6 +24,11 @@ public class CommonUtilities {
 		SETTINGS
 	}
 
+    public static void setPreferenceManager(SharedPreferences preferenceManager)
+    {
+        m_preferenceManager = preferenceManager;
+    }
+    
 	public static int getIcon(ICONS icon)
 	{
 		boolean whiteStatusBarIcon =  getStatusbarColor() != Color.WHITE;
@@ -37,20 +47,19 @@ public class CommonUtilities {
 		}
 		return R.drawable.ic_launcher;
 	}
-	private static SharedPreferences m_preferenceManager;
 
 	public static void toggleFavoriteView()
 	{
 		//Get favorite settings
-		Boolean favoriteSetting = m_preferenceManager.getBoolean("showfavorite", false);
+		Boolean favoriteSetting = m_preferenceManager.getBoolean("SHOW_ONLY_FAVORITE_STOP", false);
 		SharedPreferences.Editor editor = m_preferenceManager.edit();
-		editor.putBoolean("showfavorite", !favoriteSetting);
+		editor.putBoolean("SHOW_ONLY_FAVORITE_STOP", !favoriteSetting);
 		editor.commit();
 	}
 
 	public static boolean showFavorites()
 	{
-		return m_preferenceManager.getBoolean("showfavorite", false);
+		return m_preferenceManager.getBoolean("SHOW_ONLY_FAVORITE_STOP", false);
 	}
 
 	public static void setFavorite(String text, boolean favorite)
@@ -60,7 +69,7 @@ public class CommonUtilities {
 		text = text + ";";
 
 		//Get favorite settings
-		String favoriteSetting = m_preferenceManager.getString("favorites", "");
+		String favoriteSetting = m_preferenceManager.getString(FAVORITE_STOP_LIST, "");
 
 		//Add or remove text from the settings
 		favoriteSetting = favoriteSetting.replace(text,"");
@@ -71,20 +80,15 @@ public class CommonUtilities {
 
 		//Save settings
 		SharedPreferences.Editor editor = m_preferenceManager.edit();
-		editor.putString("favorites", favoriteSetting);
+		editor.putString(FAVORITE_STOP_LIST, favoriteSetting);
 		editor.commit();
 	}
 
 	public static boolean isFavorite(String text)
 	{
 		text = text.replace("\n", "");
-		String favoriteSetting = m_preferenceManager.getString("favorites", "");
+		String favoriteSetting = m_preferenceManager.getString(FAVORITE_STOP_LIST, "");
 		return favoriteSetting.contains(text);
-	}
-	
-	public static void setPreferenceManager(SharedPreferences preferenceManager)
-	{
-		m_preferenceManager = preferenceManager;
 	}
 	
 	public static boolean getShowRouteDirections()
