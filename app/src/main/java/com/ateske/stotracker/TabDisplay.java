@@ -225,11 +225,11 @@ public class TabDisplay extends ActionBarActivity implements
 	}
 
 	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabSelected(ActionBar.Tab tab,FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
+		m_controller.setSelectedTab(tab.getText().toString(), tab.getPosition());
         m_viewContext.tabToSelect = tab.getPosition();
         updateActionIcons(m_viewContext.favoritesEnabled);
 	}
