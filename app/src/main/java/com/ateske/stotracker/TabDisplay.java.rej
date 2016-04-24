@@ -1,9 +1,0 @@
-diff a/app/src/main/java/com/ateske/stotracker/TabDisplay.java b/app/src/main/java/com/ateske/stotracker/TabDisplay.java	(rejected hunks)
-@@ -230,7 +230,6 @@
- 		// When the given tab is selected, switch to the corresponding page in
- 		// the ViewPager.
- 		mViewPager.setCurrentItem(tab.getPosition());
--		m_controller.setSelectedTab(tab.getText().toString(), tab.getPosition());
-         m_viewContext.tabToSelect = tab.getPosition();
-         updateActionIcons(m_viewContext.favoritesEnabled);
- 	}
