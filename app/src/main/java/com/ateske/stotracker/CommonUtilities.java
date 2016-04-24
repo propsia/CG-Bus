@@ -14,7 +14,8 @@ public class CommonUtilities {
     private static SharedPreferences m_preferenceManager;
 
     private static final String FAVORITE_STOP_LIST = "favorite_stop_list";
-    private static final String SHOW_ONLY_FAVORITE_STOP = "show_only_favorite_stop";
+    private static final String SHOW_ONLY_FAVORITE_STOP_MAIN = "show_only_favorite_stop_main";
+	private static final String SHOW_ONLY_FAVORITE_STOP_STOPS = "show_only_favorite_stop_stops";
 
     public enum ICONS{
 		SHOW_ALL,
@@ -48,18 +49,58 @@ public class CommonUtilities {
 		return R.drawable.ic_launcher;
 	}
 
-	public static void toggleFavoriteView()
+    public static String generateKey(String selectedRoute, String selectedDirection, String elem)
+    {
+        if (selectedDirection == null || selectedRoute == null)
+        {
+            return elem;
+        }
+        return selectedRoute + ":" + selectedDirection + ":" + elem;
+    }
+
+	public static void toggleFavoriteView(String key)
 	{
-		//Get favorite settings
-		Boolean favoriteSetting = m_preferenceManager.getBoolean("SHOW_ONLY_FAVORITE_STOP", false);
-		SharedPreferences.Editor editor = m_preferenceManager.edit();
-		editor.putBoolean("SHOW_ONLY_FAVORITE_STOP", !favoriteSetting);
-		editor.commit();
+		if (key.equals(""))
+		{
+			//Get favorite settings
+			Boolean favoriteSetting = m_preferenceManager.getBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, false);
+			SharedPreferences.Editor editor = m_preferenceManager.edit();
+			editor.putBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, !favoriteSetting);
+			editor.commit();
+		}
+		else
+		{
+			//Prepare text for storage in settings
+			key = key.replace("\n", "");
+			key = key + ";";
+
+			//Get favorite settings
+			String favoriteSetting = m_preferenceManager.getString(SHOW_ONLY_FAVORITE_STOP_STOPS, "");
+			boolean favorite = favoriteSetting.contains(key);
+
+			//Add or remove text from the settings
+			favoriteSetting = favoriteSetting.replace(key,"");
+			if (!favorite)
+				favoriteSetting = favoriteSetting + key;
+
+			//Save settings
+			SharedPreferences.Editor editor = m_preferenceManager.edit();
+			editor.putString(SHOW_ONLY_FAVORITE_STOP_STOPS, favoriteSetting);
+			editor.commit();
+		}
+
 	}
 
-	public static boolean showFavorites()
+	public static boolean showFavorites(String key)
 	{
-		return m_preferenceManager.getBoolean("SHOW_ONLY_FAVORITE_STOP", false);
+		if (key.equals(""))
+		{
+			return m_preferenceManager.getBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, false);
+		}
+		else
+		{
+			return m_preferenceManager.getString(SHOW_ONLY_FAVORITE_STOP_STOPS, "").contains(key);
+		}
 	}
 
 	public static void setFavorite(String text, boolean favorite)

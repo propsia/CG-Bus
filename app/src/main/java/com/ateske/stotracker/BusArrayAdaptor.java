@@ -25,19 +25,23 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 	Days m_day;
 	ArrayList<String> m_fullList;
 	boolean m_showCheckBox;
+	String m_selectedBus;
+	String m_selectedDirection;
 
-	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, boolean showCheckBox) {
-		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, showCheckBox);
+	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, boolean showCheckBox, String selectedBus, String selectedDirection) {
+		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, showCheckBox, selectedBus, selectedDirection);
 	}
-	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day) {
-		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, true);
+	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, String selectedBus, String selectedDirection) {
+		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, true, selectedBus, selectedDirection);
 	}
 
-	private BusArrayAdaptor(Context context, int resource, ArrayList<String> objects, Days day, boolean showCheckBox) {
+	private BusArrayAdaptor(Context context, int resource, ArrayList<String> objects, Days day, boolean showCheckBox, String selectedBus, String selectedDirection) {
 		super(context, resource, R.id.item_text, objects);
 		m_fullList = new ArrayList(objects);
 		m_day = day;
 		m_showCheckBox = showCheckBox;
+		m_selectedBus = selectedBus;
+		m_selectedDirection = selectedDirection;
 		this.pruneListForFavorites();
 	}
 	
@@ -49,6 +53,7 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 		String text = textView.getText().toString();
 
 		//Format the text
+		textView.setContentDescription(text);
 		String[] parts = text.split("\n");
 		if (parts.length == 2)
 		{
@@ -66,7 +71,8 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 		//Format the checkbox
 		if (m_showCheckBox)
 		{
-			boolean checked = CommonUtilities.isFavorite(textView.getText().toString());
+			String key = CommonUtilities.generateKey(m_selectedBus, m_selectedDirection, textView.getContentDescription().toString());
+			boolean checked = CommonUtilities.isFavorite(key);
 			checkBox.setChecked(checked);
 
 			if (checked)
@@ -132,13 +138,17 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 
 		this.clear();
 
-		if (CommonUtilities.showFavorites())
+		String favoriteKey = CommonUtilities.generateKey(m_selectedBus, m_selectedDirection,"");
+		if (CommonUtilities.showFavorites(favoriteKey))
 		{
 			for (int i =0; i < m_fullList.size(); ++i)
 			{
 				String elem = m_fullList.get(i);
-				if (CommonUtilities.isFavorite(elem))
+				String key = CommonUtilities.generateKey(m_selectedBus, m_selectedDirection, elem);
+
+				if (CommonUtilities.isFavorite(key)) {
 					this.add(elem);
+				}
 
 			}
 		}
