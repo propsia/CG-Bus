@@ -20,6 +20,8 @@
     <string name="show_route_directions_title">Show route directions</string>
     <string name="show_route_directions_summary">If selected, the route view will show the directions for each route</string>
 
+    <string name="title_favorites_toggle">Favorites</string>
+
     <item type="id" name="random_id">1</item>
     
 

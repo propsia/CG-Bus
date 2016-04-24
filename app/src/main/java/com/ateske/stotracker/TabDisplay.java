@@ -18,13 +18,17 @@ import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ateske.stotracker.ApplicationController.Days;
 
@@ -39,6 +43,8 @@ public class TabDisplay extends ActionBarActivity implements
 	private ViewPager mViewPager;
 	private static ApplicationController m_controller;
 	private enum AnimationTypes {NONE, FORWARD, BACK};
+    private ViewContext m_viewContext;
+    MenuItem m_filterButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,24 +72,26 @@ public class TabDisplay extends ActionBarActivity implements
 			getActionBar().hide();
 		
 	}
-	
-	public void renderView(AnimationTypes animation)
+
+    public void renderView(AnimationTypes animation)
+    {
+        renderView(animation, true);
+    }
+	public void renderView(AnimationTypes animation, boolean updateContext)
 	{		
 		//Get the next view to render
-		ViewContext context = null;
-		try 
-		{
-			context = m_controller.getCurrentView();
-		} 
-		catch (XmlPullParserException e) 
-		{
-			System.err.println("An exception occurred while getting the view");
-			System.exit(-1);
-		}
+        if (updateContext) {
+            try {
+                m_viewContext = m_controller.getCurrentView();
+            } catch (XmlPullParserException e) {
+                System.err.println("An exception occurred while getting the view");
+                System.exit(-1);
+            }
+        }
 		
 		// Create the adapter that will return a fragment for each of the tabs
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager(),this, context.listViews, context.tabTitles, context.listScrollPosition);
+				getSupportFragmentManager(),this, m_viewContext.listViews, m_viewContext.tabTitles, m_viewContext.listScrollPosition, m_viewContext.favoritesEnabled);
 		
 		// Set up the ViewPager with the sections adapter.
 		ViewPager newView = new ViewPager(this);
@@ -109,7 +117,7 @@ public class TabDisplay extends ActionBarActivity implements
 		final ActionBar actionBar = getSupportActionBar();
 		
 		actionBar.removeAllTabs();
-		if (context.tabTitles.length > 0)
+		if (m_viewContext.tabTitles.length > 0)
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		else
 		{
@@ -117,9 +125,9 @@ public class TabDisplay extends ActionBarActivity implements
 		}
 		
 		//Are we allowed to hit back via the menu bar?
-        actionBar.setDisplayHomeAsUpEnabled(context.backPossible);
+        actionBar.setDisplayHomeAsUpEnabled(m_viewContext.backPossible);
         if(Build.VERSION.SDK_INT >= 14 ){
-        	actionBar.setHomeButtonEnabled(context.backPossible);
+        	actionBar.setHomeButtonEnabled(m_viewContext.backPossible);
         }
 		
 		// When swiping between different sections, select the corresponding
@@ -130,6 +138,7 @@ public class TabDisplay extends ActionBarActivity implements
 					}
 				});
 
+        int tabToSelect = m_viewContext.tabToSelect;
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getTabCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -141,20 +150,52 @@ public class TabDisplay extends ActionBarActivity implements
 					.setTabListener(this);
 			
 			actionBar.addTab(newTab);
-			if (context.tabToSelect == i)
+			if (tabToSelect == i)
 				actionBar.selectTab(actionBar.getTabAt(i));
 		}
 		
 		//Set title
-		setTitle(context.viewTitle);
-		actionBar.setTitle(context.viewTitle);
+		setTitle(m_viewContext.viewTitle);
+		actionBar.setTitle(m_viewContext.viewTitle);
+
+        //Set action icon status
+        if (m_filterButton != null)
+        {
+            updateActionIcons(m_viewContext.favoritesEnabled);
+        }
 		
 	}
+
+    private void updateActionIcons(boolean favoritesEnabled){
+        if (favoritesEnabled)
+        {
+            m_filterButton.setVisible(true);
+
+			String tab = getCurrentTab();
+            if (m_controller.getOnlyShowFavorites(tab))
+                m_filterButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SHOW_FAVORITES));
+            else
+                m_filterButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SHOW_ALL));
+        }
+        else
+        {
+            m_filterButton.setVisible(false);
+        }
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.action_bar, menu);
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        m_filterButton = menu.findItem(R.id.favorites_toggle);
+
+        try{updateActionIcons(m_controller.getCurrentView().favoritesEnabled);}
+        catch(XmlPullParserException e){}
+
+        MenuItem settingsButton = menu.findItem(R.id.action_settings);
+        settingsButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SETTINGS));
+
 		return true;
 	}
 
@@ -174,16 +215,23 @@ public class TabDisplay extends ActionBarActivity implements
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
         }
+        else if (id == R.id.favorites_toggle)
+        {
+			String tab = getCurrentTab();
+            m_controller.toggleShowFavorites(tab);
+            renderView(AnimationTypes.NONE, false);
+        }
         return super.onOptionsItemSelected(item);
 	}
 
 	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabSelected(ActionBar.Tab tab,FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 		m_controller.setSelectedTab(tab.getText().toString(), tab.getPosition());
+        m_viewContext.tabToSelect = tab.getPosition();
+        updateActionIcons(m_viewContext.favoritesEnabled);
 	}
 
 	@Override
@@ -206,9 +254,10 @@ public class TabDisplay extends ActionBarActivity implements
 		String[] m_tabTitles;
 		int[] m_listPosition;
 		OnItemClickListener m_clickListener;
+        boolean m_allowFavorites;
 
 		public SectionsPagerAdapter(FragmentManager fm, OnItemClickListener listener, 
-				List<String[]> pageContents, String[] tabTitles, int[] listPosition) {
+				List<String[]> pageContents, String[] tabTitles, int[] listPosition, boolean allowFavorites) {
 			super(fm);
 			
 			if (pageContents.size() != 1 && pageContents.size() != tabTitles.length)
@@ -218,6 +267,7 @@ public class TabDisplay extends ActionBarActivity implements
 			m_tabTitles = tabTitles;
 			m_clickListener = listener;
 			m_listPosition = listPosition;
+            m_allowFavorites = allowFavorites;
 			
 		}
 
@@ -238,7 +288,18 @@ public class TabDisplay extends ActionBarActivity implements
 					day = Days.SUNDAY;
 				}
 			}
-			PlaceholderFragment fragment = PlaceholderFragment.newInstance(m_pageContents.get(position), m_listPosition[position], day);
+
+            String[] busNumberSplit = m_viewContext.viewTitle.split(": ");
+            String busNumber = null;
+            String busDirection = null;
+
+            if (position < m_viewContext.tabTitles.length)
+            {
+                busNumber = busNumberSplit[busNumberSplit.length-1];
+                busDirection = m_viewContext.tabTitles[position];
+            }
+
+			PlaceholderFragment fragment = PlaceholderFragment.newInstance(m_pageContents.get(position), m_listPosition[position], day, m_allowFavorites,busNumber, busDirection );
 			fragment.setOnItemClickListener(m_clickListener);
 			return fragment;
 		}
@@ -266,6 +327,9 @@ public class TabDisplay extends ActionBarActivity implements
 		private static final String LIST_CONTENTS = "list_contents";
 		private static final String LIST_POSITION = "list_position";
 		private static final String SELECTED_DAY = "selected_day";
+        private static final String ALLOW_FAVORITES = "allow_favorites";
+        private static final String SELECTED_BUS = "selected_bus";
+        private static final String SELECTED_DIRECTION = "selected_direction";
 		
 		private OnItemClickListener m_listener;
 		private int m_defaultPosition;
@@ -273,12 +337,15 @@ public class TabDisplay extends ActionBarActivity implements
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
-		public static PlaceholderFragment newInstance(String[] listItems, int listPosition, Days day) {
+		public static PlaceholderFragment newInstance(String[] listItems, int listPosition, Days day, boolean allowFavorites, String selectedBus, String selectedDirection) {
 			PlaceholderFragment fragment = new PlaceholderFragment();
 			Bundle args = new Bundle();
 			args.putStringArray(LIST_CONTENTS, listItems);
 			args.putInt(LIST_POSITION, listPosition);
 			args.putSerializable(SELECTED_DAY, day);
+            args.putBoolean(ALLOW_FAVORITES, allowFavorites);
+            args.putString(SELECTED_BUS, selectedBus);
+            args.putString(SELECTED_DIRECTION, selectedDirection);
 			fragment.setArguments(args);
 			return fragment;
 		}
@@ -290,10 +357,12 @@ public class TabDisplay extends ActionBarActivity implements
 			Bundle args = this.getArguments();
 			String[] values = (String[]) args.get(LIST_CONTENTS);
 			Days day = (Days) args.get(SELECTED_DAY);
-			BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), android.R.layout.simple_list_item_1, values, day);
+            boolean allowFavorites = (boolean)args.get(ALLOW_FAVORITES);
+            String selectedBus = (String) args.get(SELECTED_BUS);
+            String selectedDirection = (String) args.get(SELECTED_DIRECTION);
+			BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), R.layout.list_item_star, values, day, allowFavorites,selectedBus, selectedDirection);
 			setListAdapter(adapter);
 			m_defaultPosition = (int)args.get(LIST_POSITION);
-			
 			
 			return super.onCreateView(inflater, container, savedInstanceState);
 		}
@@ -313,6 +382,24 @@ public class TabDisplay extends ActionBarActivity implements
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			m_listener.onItemClick(l, v, position, id);
+		}
+
+	}
+
+	public void checkboxClicked(View v) {
+		CheckBox checkBox = (CheckBox)v;
+		LinearLayout linearLayout = (LinearLayout)checkBox.getParent();
+		TextView textView = (TextView) linearLayout.getChildAt(0);
+		String text = textView.getContentDescription().toString();
+		String tab = getCurrentTab();
+
+		if(checkBox.isChecked()){
+			m_controller.setFavorite(text, tab, true);
+            checkBox.setButtonDrawable(CommonUtilities.getIcon(CommonUtilities.ICONS.FAVORITE));
+		}
+		else{
+            m_controller.setFavorite(text, tab, false);
+            checkBox.setButtonDrawable(CommonUtilities.getIcon(CommonUtilities.ICONS.NOT_FAVORITE));
 		}
 	}
 
@@ -337,4 +424,11 @@ public class TabDisplay extends ActionBarActivity implements
       super.onConfigurationChanged(newConfig);
     }
 
+	private String getCurrentTab(){
+		String tab = null;
+		int tabIndex = mViewPager.getCurrentItem();
+		if (tabIndex < m_viewContext.tabTitles.length)
+			tab = m_viewContext.tabTitles[tabIndex];
+		return tab;
+	}
 }

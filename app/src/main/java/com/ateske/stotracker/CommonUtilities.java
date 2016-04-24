@@ -1,18 +1,135 @@
 package com.ateske.stotracker;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+
 import com.ateske.stotracker.ApplicationController.Days;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
 public class CommonUtilities {
-	
-	private static SharedPreferences m_preferenceManager;
-	
-	public static void setPreferenceManager(SharedPreferences preferenceManager)
+
+    private static SharedPreferences m_preferenceManager;
+
+    private static final String FAVORITE_STOP_LIST = "favorite_stop_list";
+    private static final String SHOW_ONLY_FAVORITE_STOP_MAIN = "show_only_favorite_stop_main";
+	private static final String SHOW_ONLY_FAVORITE_STOP_STOPS = "show_only_favorite_stop_stops";
+
+    public enum ICONS{
+		SHOW_ALL,
+		SHOW_FAVORITES,
+		FAVORITE,
+		NOT_FAVORITE,
+		SETTINGS
+	}
+
+    public static void setPreferenceManager(SharedPreferences preferenceManager)
+    {
+        m_preferenceManager = preferenceManager;
+    }
+    
+	public static int getIcon(ICONS icon)
 	{
-		m_preferenceManager = preferenceManager;
+		boolean whiteStatusBarIcon =  getStatusbarColor() != Color.WHITE;
+		boolean whiteIcon = getEnabledTextColor() == Color.WHITE;
+		switch (icon) {
+			case SHOW_ALL:
+				return whiteStatusBarIcon? R.drawable.ic_star_half_white_24dp : R.drawable.ic_star_half_black_24dp;
+			case SHOW_FAVORITES:
+				return whiteStatusBarIcon? R.drawable.ic_star_white_24dp : R.drawable.ic_star_black_24dp;
+			case FAVORITE:
+				return whiteIcon? R.drawable.ic_star_white_24dp : R.drawable.ic_star_black_24dp;
+			case NOT_FAVORITE:
+				return whiteIcon? R.drawable.ic_star_border_white_24dp : R.drawable.ic_star_border_black_24dp;
+			case SETTINGS:
+				return whiteStatusBarIcon? R.drawable.ic_settings_white_24dp : R.drawable.ic_settings_black_24dp;
+		}
+		return R.drawable.ic_launcher;
+	}
+
+    public static String generateKey(String selectedRoute, String selectedDirection, String elem)
+    {
+        if (selectedDirection == null || selectedRoute == null)
+        {
+            return elem;
+        }
+        return selectedRoute + ":" + selectedDirection + ":" + elem;
+    }
+
+	public static void toggleFavoriteView(String key)
+	{
+		if (key.equals(""))
+		{
+			//Get favorite settings
+			Boolean favoriteSetting = m_preferenceManager.getBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, false);
+			SharedPreferences.Editor editor = m_preferenceManager.edit();
+			editor.putBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, !favoriteSetting);
+			editor.commit();
+		}
+		else
+		{
+			//Prepare text for storage in settings
+			key = key.replace("\n", "");
+			key = key + ";";
+
+			//Get favorite settings
+			String favoriteSetting = m_preferenceManager.getString(SHOW_ONLY_FAVORITE_STOP_STOPS, "");
+			boolean favorite = favoriteSetting.contains(key);
+
+			//Add or remove text from the settings
+			favoriteSetting = favoriteSetting.replace(key,"");
+			if (!favorite)
+				favoriteSetting = favoriteSetting + key;
+
+			//Save settings
+			SharedPreferences.Editor editor = m_preferenceManager.edit();
+			editor.putString(SHOW_ONLY_FAVORITE_STOP_STOPS, favoriteSetting);
+			editor.commit();
+		}
+
+	}
+
+	public static boolean showFavorites(String key)
+	{
+		if (key.equals(""))
+		{
+			return m_preferenceManager.getBoolean(SHOW_ONLY_FAVORITE_STOP_MAIN, false);
+		}
+		else
+		{
+			return m_preferenceManager.getString(SHOW_ONLY_FAVORITE_STOP_STOPS, "").contains(key);
+		}
+	}
+
+	public static void setFavorite(String text, boolean favorite)
+	{
+		//Prepare text for storage in settings
+		text = text.replace("\n", "");
+		text = text + ";";
+
+		//Get favorite settings
+		String favoriteSetting = m_preferenceManager.getString(FAVORITE_STOP_LIST, "");
+
+		//Add or remove text from the settings
+		favoriteSetting = favoriteSetting.replace(text,"");
+		if (favorite)
+		{
+			favoriteSetting = favoriteSetting + text;
+		}
+
+		//Save settings
+		SharedPreferences.Editor editor = m_preferenceManager.edit();
+		editor.putString(FAVORITE_STOP_LIST, favoriteSetting);
+		editor.commit();
+	}
+
+	public static boolean isFavorite(String text)
+	{
+		text = text.replace("\n", "");
+		String favoriteSetting = m_preferenceManager.getString(FAVORITE_STOP_LIST, "");
+		return favoriteSetting.contains(text);
 	}
 	
 	public static boolean getShowRouteDirections()
@@ -127,6 +244,12 @@ public class CommonUtilities {
 	private static boolean isDarkThemeSelected()
 	{
 		return m_preferenceManager.getString("example_list", "0").equals("1");
+	}
+
+	private static int getStatusbarColor(){
+		if (getSelectedTheme() == android.R.style.Theme_Holo_Light)
+			return Color.WHITE;
+		return Color.BLACK;
 	}
 	
 	
