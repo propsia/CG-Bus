@@ -73,6 +73,10 @@ public class TabDisplay extends ActionBarActivity implements
 		
 	}
 
+	protected void onResume(){
+		super.onResume();
+		renderView(AnimationTypes.NONE);
+	}
     public void renderView(AnimationTypes animation)
     {
         renderView(animation, true);

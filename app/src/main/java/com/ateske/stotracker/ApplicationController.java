@@ -16,7 +16,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Xml;
 
-public class ApplicationController extends Activity {
+public class ApplicationController{
 	
 	public enum Days { WEEKDAY, SATURDAY, SUNDAY }
 	
