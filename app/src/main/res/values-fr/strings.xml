@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">STO Tracker</string>
+    
+    <string name="route_page_title">Lignes</string>
+    <string name="route_prefix">Ligne:</string>
+    <string name="weekday_label">Lun-Ven</string>
+    <string name="saturday_label">Samedi</string>
+    <string name="sunday_label">Dimanche</string>
+    
+    <string name="no_service_message">Aucun service pour ce journée</string>
+    
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="theme_option_title">Thèmes</string>
+    <string name="light_theme_string">Pale</string>
+    <string name="dark_theme_string">Dark</string>
+    <string name="hybrid_theme_string">Hybrid</string>
+    
+    <string name="show_route_directions_title">Afficher les directions de route</string>
+    <string name="show_route_directions_summary">Si sélectionnée, le menu principal affiche les direction pour les lignes</string>
+
+</resources>
