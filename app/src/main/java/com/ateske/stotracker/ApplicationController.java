@@ -233,6 +233,7 @@ public class ApplicationController extends Activity {
 		context.viewTitle = m_context.getString(R.string.route_page_title);
 		context.backPossible = false;
 		context.listScrollPosition[0] = m_selectedRoutePosition;
+		context.favoritesEnabled = true;
 		
 		return context;
 		
@@ -256,6 +257,7 @@ public class ApplicationController extends Activity {
 		context.viewTitle = m_context.getString(R.string.route_prefix) + " " +  selectedRoute;
 		context.tabToSelect = m_previouslySelectedDirection;
 		context.listScrollPosition[m_previouslySelectedDirection] = m_selectedStopPosition;
+		context.favoritesEnabled = true;
 		
     	return context;
 	}
@@ -340,6 +342,24 @@ public class ApplicationController extends Activity {
 			return Days.SATURDAY;
 		
 		return Days.SUNDAY;	
+	}
+
+	public void setFavorite(String text, String selectedTab, boolean favorite)
+	{
+		String key = CommonUtilities.generateKey(selectedRoute, selectedTab, text);
+		CommonUtilities.setFavorite(key, favorite);
+	}
+
+	public void toggleShowFavorites(String selectedTab)
+	{
+		String key = CommonUtilities.generateKey(selectedRoute, selectedTab, "");
+		CommonUtilities.toggleFavoriteView(key);
+	}
+
+	public boolean getOnlyShowFavorites(String selectedTab)
+	{
+		String key = CommonUtilities.generateKey(selectedRoute, selectedTab, "");
+		return CommonUtilities.showFavorites(key);
 	}
 
 }

@@ -1,4 +1,12 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:compat="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/favorites_toggle"
+        android:title="@string/title_favorites_toggle"
+        android:icon="@drawable/ic_star_black_24dp"
+        compat:showAsAction="always"
+        />
     <item android:id="@+id/action_settings"
-          android:title="@string/title_activity_settings"/>
+        android:icon="@drawable/ic_settings_black_24dp"
+        compat:showAsAction="always"
+        android:title="@string/title_activity_settings"/>
 </menu>
