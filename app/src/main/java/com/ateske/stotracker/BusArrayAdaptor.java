@@ -86,6 +86,9 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 			checkBox.setVisibility(View.INVISIBLE);
 		}
 
+		//Set the font size
+		if (CommonUtilities.isFontSizeOverride())
+			textView.setTextSize(CommonUtilities.getFontSize());
 
 		return linearLayout;
 	}
