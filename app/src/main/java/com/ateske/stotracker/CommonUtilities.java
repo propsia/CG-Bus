@@ -251,6 +251,16 @@ public class CommonUtilities {
 			return Color.WHITE;
 		return Color.BLACK;
 	}
-	
+
+	public static boolean isFontSizeOverride()
+	{
+		return m_preferenceManager.getBoolean("override_font_size",false);
+	}
+
+	public static int getFontSize()
+	{
+		String fontSize = m_preferenceManager.getString("font_sizes_list","18");
+		return Integer.parseInt(fontSize);
+	}
 	
 }

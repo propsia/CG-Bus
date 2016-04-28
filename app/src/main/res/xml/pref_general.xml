@@ -20,4 +20,19 @@
       android:summary="@string/show_route_directions_summary"
       android:key="show_route_directions" />
 
+    <CheckBoxPreference
+        android:title="@string/override_font_size_title"
+        android:defaultValue="false"
+        android:key="override_font_size"/>
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/font_sizes_titles"
+        android:entryValues="@array/font_sizes_values"
+        android:key="font_sizes_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:dependency="override_font_size"
+        android:title="@string/font_size_title" />
+
 </PreferenceScreen>

@@ -21,5 +21,12 @@
     <string name="show_route_directions_summary">Si sélectionnée, le menu principal affiche les direction pour les lignes</string>
 
     <string name="title_favorites_toggle">Préféré</string>
+    <string name="font_huge"> Très gros</string>
+    <string name="font_large">Gros</string>
+    <string name="font_normal">Normale</string>
+    <string name="font_size_title">Taille de la police</string>
+    <string name="font_small">Petit</string>
+    <string name="font_tiny">Très petit</string>
+    <string name="override_font_size_title">Outrepasser la taille de la police</string>
 
 </resources>
