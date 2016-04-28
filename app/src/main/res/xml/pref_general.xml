@@ -26,7 +26,7 @@
         android:key="override_font_size"/>
 
     <ListPreference
-        android:defaultValue="0"
+        android:defaultValue="18"
         android:entries="@array/font_sizes_titles"
         android:entryValues="@array/font_sizes_values"
         android:key="font_sizes_list"
