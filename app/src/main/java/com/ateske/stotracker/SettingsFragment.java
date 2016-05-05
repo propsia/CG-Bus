@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 /**
@@ -22,11 +23,11 @@ import android.preference.PreferenceManager;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsFragment extends PreferenceFragment implements ISTOFragment {
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
 		setupSimplePreferencesScreen();
 	}
@@ -36,23 +37,10 @@ public class SettingsActivity extends PreferenceActivity {
 	 * device configuration dictates that a simplified, single-pane UI should be
 	 * shown.
 	 */
-	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen() {
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
 		bindPreferenceSummaryToValue(findPreference("example_list"));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean onIsMultiPane() {
-		return false;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public void onBuildHeaders(List<Header> target) {
 	}
 
 	/**
@@ -62,24 +50,24 @@ public class SettingsActivity extends PreferenceActivity {
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
-			String stringValue = value.toString();
+		String stringValue = value.toString();
 
-			if (preference instanceof ListPreference) {
-				// For list preferences, look up the correct display value in
-				// the preference's 'entries' list.
-				ListPreference listPreference = (ListPreference) preference;
-				int index = listPreference.findIndexOfValue(stringValue);
+		if (preference instanceof ListPreference) {
+			// For list preferences, look up the correct display value in
+			// the preference's 'entries' list.
+			ListPreference listPreference = (ListPreference) preference;
+			int index = listPreference.findIndexOfValue(stringValue);
 
-				// Set the summary to reflect the new value.
-				preference.setSummary(index >= 0 ? listPreference.getEntries()[index]
-								: null);
+			// Set the summary to reflect the new value.
+			preference.setSummary(index >= 0 ? listPreference.getEntries()[index]
+							: null);
 
-			}else {
-				// For all other preferences, set the summary to the value's
-				// simple string representation.
-				preference.setSummary(stringValue);
-			}
-			return true;
+		}else {
+			// For all other preferences, set the summary to the value's
+			// simple string representation.
+			preference.setSummary(stringValue);
+		}
+		return true;
 		}
 	};
 
@@ -105,12 +93,21 @@ public class SettingsActivity extends PreferenceActivity {
 						preference.getContext()).getString(preference.getKey(),
 						""));
 	}
-	
-    @Override
-    public void onBackPressed() {
-    	finish();
-    	Intent refresh = new Intent(this, TabDisplay.class);
-    	startActivity(refresh);
-    }
 
+	@Override
+	public boolean showFavoritesToggle() {
+		return false;
+	}
+
+	@Override
+	public String getTitle() {
+		return "~~~";
+	}
+
+	@Override
+	public boolean back() {
+		return false;
+	}
+
+	public boolean isBackAllowed(){return false;}
 }

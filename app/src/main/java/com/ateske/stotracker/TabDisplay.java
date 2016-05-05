@@ -85,12 +85,12 @@ public class TabDisplay extends ActionBarActivity implements
 	{		
 		//Get the next view to render
         if (updateContext) {
-            try {
+            //try {
                 m_viewContext = m_controller.getCurrentView();
-            } catch (XmlPullParserException e) {
-                System.err.println("An exception occurred while getting the view");
-                System.exit(-1);
-            }
+            //} catch (XmlPullParserException e) {
+                //System.err.println("An exception occurred while getting the view");
+                //System.exit(-1);
+            //}
         }
 		
 		// Create the adapter that will return a fragment for each of the tabs
@@ -194,11 +194,13 @@ public class TabDisplay extends ActionBarActivity implements
         inflater.inflate(R.menu.action_bar, menu);
         m_filterButton = menu.findItem(R.id.favorites_toggle);
 
-        try{updateActionIcons(m_controller.getCurrentView().favoritesEnabled);}
-        catch(XmlPullParserException e){}
+        //try{
+			updateActionIcons(m_controller.getCurrentView().favoritesEnabled);
+		//}
+        //catch(XmlPullParserException e){}
 
-        MenuItem settingsButton = menu.findItem(R.id.action_settings);
-        settingsButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SETTINGS));
+        //MenuItem settingsButton = menu.findItem(R.id.action_settings);
+        //settingsButton.setIcon(CommonUtilities.getIcon(CommonUtilities.ICONS.SETTINGS));
 
 		return true;
 	}
@@ -208,24 +210,25 @@ public class TabDisplay extends ActionBarActivity implements
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == android.R.id.home){
-        	onBackPressed();
-        	return true;
-        }
-        else if (id == R.id.action_settings)
-        {
-			finish();
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-        }
-        else if (id == R.id.favorites_toggle)
-        {
-			String tab = getCurrentTab();
-            m_controller.toggleShowFavorites(tab);
-            renderView(AnimationTypes.NONE, false);
-        }
-        return super.onOptionsItemSelected(item);
+//        int id = item.getItemId();
+//        if (id == android.R.id.home){
+//        	onBackPressed();
+//        	return true;
+//        }
+//        else if (id == R.id.action_settings)
+//        {
+//			finish();
+//			Intent intent = new Intent(this, SettingsActivity.class);
+//			startActivity(intent);
+//        }
+//        else if (id == R.id.favorites_toggle)
+//        {
+//			String tab = getCurrentTab();
+//            m_controller.toggleShowFavorites(tab);
+//            renderView(AnimationTypes.NONE, false);
+//        }
+//        return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 	@Override
@@ -364,8 +367,8 @@ public class TabDisplay extends ActionBarActivity implements
             boolean allowFavorites = (boolean)args.get(ALLOW_FAVORITES);
             String selectedBus = (String) args.get(SELECTED_BUS);
             String selectedDirection = (String) args.get(SELECTED_DIRECTION);
-			BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), R.layout.list_item_star, values, day, allowFavorites,selectedBus, selectedDirection);
-			setListAdapter(adapter);
+			//BusArrayAdaptor adapter = new BusArrayAdaptor(getActivity().getBaseContext(), R.layout.list_item_star, values, day, allowFavorites,selectedBus, selectedDirection);
+			//setListAdapter(adapter);
 			m_defaultPosition = (int)args.get(LIST_POSITION);
 			
 			return super.onCreateView(inflater, container, savedInstanceState);

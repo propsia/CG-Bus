@@ -129,7 +129,14 @@ public class ApplicationController{
     	selectedTab = tabTitle;
     	selectedTabIndex = tabIndex;
     }
-    
+
+	public boolean isBackAllowed()
+	{
+		if (selectedRoute == null)
+			return false;
+
+		return true;
+	}
     public boolean back()
     {
     	if (selectedStop != null){
@@ -167,12 +174,16 @@ public class ApplicationController{
     	return true;
     } 
     
-	public ViewContext getCurrentView() throws XmlPullParserException
+	public ViewContext getCurrentView()
 	{
- 
+
+
     	if (selectedRoute == null)
     	{
-    		return getBusRoutes();
+			try {
+				return getBusRoutes();
+			}
+			catch(Exception e){return null;}
     	}
     	else if (selectedStop == null || selectedDirection == null)
     	{

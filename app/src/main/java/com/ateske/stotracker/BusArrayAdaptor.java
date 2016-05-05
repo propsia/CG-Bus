@@ -27,21 +27,17 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 	boolean m_showCheckBox;
 	String m_selectedBus;
 	String m_selectedDirection;
+    View.OnClickListener m_listener;
 
-	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, boolean showCheckBox, String selectedBus, String selectedDirection) {
-		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, showCheckBox, selectedBus, selectedDirection);
-	}
-	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, String selectedBus, String selectedDirection) {
-		this(context, resource, new ArrayList<>(Arrays.asList(objects)), day, true, selectedBus, selectedDirection);
-	}
 
-	private BusArrayAdaptor(Context context, int resource, ArrayList<String> objects, Days day, boolean showCheckBox, String selectedBus, String selectedDirection) {
-		super(context, resource, R.id.item_text, objects);
-		m_fullList = new ArrayList(objects);
+	public BusArrayAdaptor(Context context, int resource, String[] objects, Days day, boolean showCheckBox, String selectedBus, String selectedDirection, View.OnClickListener listener) {
+		super(context, resource, R.id.item_text, new ArrayList<>(Arrays.asList(objects)));
+		m_fullList = new ArrayList<>(Arrays.asList(objects));
 		m_day = day;
 		m_showCheckBox = showCheckBox;
 		m_selectedBus = selectedBus;
 		m_selectedDirection = selectedDirection;
+        m_listener = listener;
 		this.pruneListForFavorites();
 	}
 	
@@ -85,6 +81,9 @@ public class BusArrayAdaptor extends ArrayAdapter<String>
 			checkBox.setClickable(false);
 			checkBox.setVisibility(View.INVISIBLE);
 		}
+
+        //Set the checkbox listener
+        checkBox.setOnClickListener(m_listener);
 
 		//Set the font size
 		if (CommonUtilities.isFontSizeOverride())

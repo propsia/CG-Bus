@@ -2,15 +2,15 @@
 <resources>
 
     <string name="app_name">STO Tracker</string>
-    
+
     <string name="route_page_title">Routes</string>
     <string name="route_prefix">Route:</string>
     <string name="weekday_label">Mon-Fri</string>
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>
-    
+
     <string name="no_service_message">No service for this day</string>
-    
+
     <string name="title_activity_settings">Settings</string>
     <string name="theme_option_title">Theme</string>
     <string name="light_theme_string">Light</string>
@@ -22,7 +22,7 @@
     <string name="font_normal">Normal</string>
     <string name="font_large">Large</string>
     <string name="font_huge">Huge</string>
-    
+
     <string name="show_route_directions_title">Show route directions</string>
     <string name="show_route_directions_summary">If selected, the route view will show the directions for each route</string>
 
@@ -31,7 +31,20 @@
 
     <string name="title_favorites_toggle">Favorites</string>
 
-    <item type="id" name="random_id">1</item>
-    
+    <item name="random_id" type="id">1</item>
+
+    <string-array name="menu_items">
+        <item>Routes</item>
+        <item>Stops</item>
+        <item>Settings</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
