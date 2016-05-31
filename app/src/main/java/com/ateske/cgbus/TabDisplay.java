@@ -1,4 +1,4 @@
-package com.ateske.stotracker;
+package com.ateske.cgbus;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ateske.stotracker.ApplicationController.Days;
+import com.ateske.cgbus.ApplicationController.Days;
 
 import org.xmlpull.v1.XmlPullParserException;
 

@@ -1,4 +1,4 @@
-package com.ateske.stotracker;
+package com.ateske.cgbus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,6 @@ import java.util.Set;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Xml;
 
@@ -187,7 +186,7 @@ public class ApplicationController{
    
     private XmlPullParser getParser() {
     	
-    	String fileName = "sto-complete.xml";
+    	String fileName = "cg-bus-schedule.xml";
     	
         try {
         	InputStream in = m_context.getAssets().open(fileName);

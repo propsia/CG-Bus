@@ -1,4 +1,4 @@
-package com.ateske.stotracker;
+package com.ateske.cgbus;
 
 import java.util.List;
 

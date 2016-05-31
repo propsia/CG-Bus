@@ -1,10 +1,8 @@
-package com.ateske.stotracker;
+package com.ateske.cgbus;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
-import com.ateske.stotracker.ApplicationController.Days;
+import com.ateske.cgbus.ApplicationController.Days;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;

@@ -1,4 +1,4 @@
-package com.ateske.stotracker;
+package com.ateske.cgbus;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ateske.stotracker.ApplicationController.Days;
+import com.ateske.cgbus.ApplicationController.Days;
 
 import java.util.ArrayList;
 import java.util.Arrays;
