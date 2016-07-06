@@ -1,9 +1,9 @@
 <resources>
     
-    <string-array name="theme_list_titles">
-	     <item>@string/light_theme_string</item>
-	     <item>@string/dark_theme_string</item>
-	     <item>@string/hybrid_theme_string</item>
-    </string-array>
+    <!--<string-array name="theme_list_titles">-->
+	     <!--<item>@string/light_theme_string</item>-->
+	     <!--<item>@string/dark_theme_string</item>-->
+	     <!--<item>@string/hybrid_theme_string</item>-->
+    <!--</string-array>-->
 
 </resources>

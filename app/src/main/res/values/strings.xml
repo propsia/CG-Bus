@@ -22,7 +22,7 @@
     <string name="font_normal">Normal</string>
     <string name="font_large">Large</string>
     <string name="font_huge">Huge</string>
-    
+    <string name="banner_ad_unit_id">ca-app-pub-3118670270612324~3992090341</string>
     <string name="show_route_directions_title">Show route directions</string>
     <string name="show_route_directions_summary">If selected, the route view will show the directions for each route</string>
 
@@ -30,6 +30,8 @@
     <string name="font_size_title">Font size</string>
 
     <string name="title_favorites_toggle">Favorites</string>
+    <string name="aboutApp">About Application</string>
+    <string name="applicationPage">https://www.facebook.com/CGCityBus</string>
 
     <item type="id" name="random_id">1</item>
     
