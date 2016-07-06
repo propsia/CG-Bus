@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<style name="MyMaterialTheme" parent="MyMaterialTheme.Base">-->
-        <!--<item name="windowNoTitle">true</item>-->
-        <!--<item name="windowActionBar">false</item>-->
-        <!--<item name="android:colorPrimary">@color/colorPrimary</item>-->
-        <!--<item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <!--<item name="android:colorAccent">@color/colorAccent</item>-->
-        <!--<item name="android:windowContentTransitions">true</item>-->
-        <!--<item name="android:windowAllowEnterTransitionOverlap">true</item>-->
-        <!--<item name="android:windowAllowReturnTransitionOverlap">true</item>-->
-        <!--<item name="android:windowSharedElementEnterTransition">@android:transition/slide_right</item>-->
-        <!--<item name="android:windowSharedElementExitTransition">@android:transition/explode</item>-->
-    <!--</style>-->
-
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
@@ -28,4 +15,24 @@
     </style>
     <style name="AppTheme" parent="AppTheme.Base"></style>
 
+    <!-- Base application theme. -->
+    <style name="preferenceTheme.Base" parent="Theme.AppCompat.Light">
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#3F51B5</item>
+        <!-- Light Indigo -->
+        <item name="colorPrimaryDark">#3949AB</item>
+        <!-- Dark Indigo -->
+        <item name="colorAccent">#00B0FF</item>
+        <!-- Blue -->
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#FFFFFF</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/fade</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/explode</item>
+    </style>
+    <style name="preferenceTheme" parent="preferenceTheme.Base"></style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
 </resources>

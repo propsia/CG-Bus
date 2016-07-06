@@ -2,15 +2,15 @@
 <resources>
 
     <string name="app_name">CG CityBus</string>
-    
+
     <string name="route_page_title">Routes</string>
     <string name="route_prefix">Route:</string>
     <string name="weekday_label">Mon-Fri</string>
     <string name="saturday_label">Saturday</string>
     <string name="sunday_label">Sunday</string>
-    
+
     <string name="no_service_message">No service for this day</string>
-    
+
     <string name="title_activity_settings">Settings</string>
     <string name="theme_option_title">Theme</string>
     <string name="light_theme_string">Light</string>
@@ -30,10 +30,14 @@
     <string name="font_size_title">Font size</string>
 
     <string name="title_favorites_toggle">Favorites</string>
-    <string name="aboutApp">About Application</string>
+    <string name="aboutApp">Facebook</string>
     <string name="applicationPage">https://www.facebook.com/CGCityBus</string>
+    <string name="likeNshare">Like and Share</string>
+    <string name="setFont">Font</string>
+    <string name="contactDeveloper">Contact Us</string>
+    <string name="sendMail">Send Email</string>
+    <string name="contact_developer_uri">ahmed.nadeem016@gmail.com</string>
+    <item name="random_id" type="id">1</item>
 
-    <item type="id" name="random_id">1</item>
-    
 
 </resources>
