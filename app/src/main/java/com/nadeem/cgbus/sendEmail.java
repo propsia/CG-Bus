@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class sendEmail extends SettingsActivity {
+public class SendEmail extends SettingsActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
